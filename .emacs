@@ -11,6 +11,10 @@
 
 (require 'ido)
 (ido-mode t)
+(ido-everywhere 1)
+
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
 (tool-bar-mode -1)	;removing clickable toolstrips
 
@@ -42,3 +46,5 @@
 (load-theme 'gruber-darker)
 
 (setq display-line-numbers 'relative)
+(global-display-line-numbers-mode)
+(menu-bar--display-line-numbers-mode-relative)
