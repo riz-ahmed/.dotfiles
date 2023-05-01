@@ -4,7 +4,7 @@ local opt = vim.opt -- for concisness
 opt.number = true -- for displaying the line numbers
 opt.relativenumber = true -- for displaying relative line numbers
 
--- opt.noncompatible = true
+opt.noncompatible = true     -- so that nvim is not compatibble with old vi
 
 -- tabs and indentations
 opt.tabstop = 4
@@ -13,7 +13,7 @@ opt.expandtab = true
 opt.autoindent = true
 
 -- line wrapping
-opt.wrap = false
+opt.wrap = true                         -- jus want the text to be wrapped by default
 
 -- search settings
 opt.ignorecase = true                   -- to ignore upper and lower cases while searching
