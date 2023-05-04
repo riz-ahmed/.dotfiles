@@ -11,3 +11,5 @@ dracula.draw.blood(c, {
 })
 
 c.colors.webpage.darkmode.enabled=True
+c.fonts.default_size="15pt"
+c.zoom.default=150

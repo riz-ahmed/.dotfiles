@@ -36,3 +36,6 @@ set clipboard=unnamedplus	"copies / pasters from the clipboard
 let g:netrw_winsize=20		"window width
 
 colorscheme slate		"default colorscheme
+
+"airline (statusline) settings
+let g:airline_theme='base16'
