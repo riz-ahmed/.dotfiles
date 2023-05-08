@@ -10,13 +10,20 @@ bindkey -e
 
 setopt autocd		# automatically cd into typed direcorty
 PS1="%B%F{red}[%F{yellow}%n%F{green}@%F{blue}%M%F{magenta}%~%F{red}]%f%b "
-PS2="%BF{blue}>%f%b"
+PS2="%B%F{blue}>>>%f%b "
 stty stop undef		# disable ctrl-s to avoid terminal freezing
 setopt interactive_comments
+
+# tell fzf to use ripgrep
+if type rg &> /dev/null; then				# if ripgrep exists
+  export FZF_DEFAULT_COMMAND='rg --files'		# use ripgrep for fzf
+  export FZF_DEFAULT_OPTS='-m'				# make multiple selections using <Tab> or <Shift-Tab>
+fi
 
 # setting defualt editor (nvim)
 export EDITOR="$(which nvim)"
 export VISUAL="$(which nvim)"
+export BROWSER="$(which qutebrowser)"
 
 # load aliases 
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
@@ -30,7 +37,7 @@ HISTFILESIZE=500
 FCEDIT="$(which nvim)"
 
 # update PATH
-PATH=$PATH":$HOME/.config/shell_scripts"
+# PATH=$PATH":$HOME/.config/shell_scripts"
 
 # # plugins
 # enabling zoxide
