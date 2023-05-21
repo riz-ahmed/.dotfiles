@@ -105,6 +105,9 @@ return packer.startup(function(use)
     -- to display the hex colors in nvim
     use "norcalli/nvim-colorizer.lua"
 
+    -- git integration in neovim
+    use "tpope/vim-fugitive"
+
     if packer_bootstrap then
         require('packer').sync()
     end

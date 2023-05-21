@@ -24,6 +24,8 @@ fi
 export EDITOR="$(which nvim)"
 export VISUAL="$(which nvim)"
 export BROWSER="$(which qutebrowser)"
+export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"   # colorise man pages
 
 # load aliases 
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
@@ -36,8 +38,12 @@ HISTCONTROL=ignorespace:ignoredups
 HISTFILESIZE=500
 FCEDIT="$(which nvim)"
 
-# update PATH
-# PATH=$PATH":$HOME/.config/shell_scripts"
+# updaet run-help to improve its functionality to work on shell built-ins and shell commands
+autoload -Uz run-help
+(( ${+aliases[run-help]} )) && unalias run-help
+alias help=run-help
+
+autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo run-help-svk run-help-svn
 
 # # plugins
 # enabling zoxide

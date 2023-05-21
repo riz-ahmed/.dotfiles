@@ -16,6 +16,8 @@
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
+(global-set-key (kbd "<escape>") 'kbd-escape-quit)
+
 (tool-bar-mode -1)	;removing clickable toolstrips
 
 (scroll-bar-mode -1)
@@ -45,6 +47,15 @@
  )
 (load-theme 'gruber-darker)
 
-(setq display-line-numbers 'relative)
-(global-display-line-numbers-mode)
+(column-number-mode)
+(global-display-line-numbers-mode t)
+;; disable line number in some modes
+(dolist (mode '(org-mode-hook
+		shell-mode-hook
+		term-mode-hook
+		eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 (menu-bar--display-line-numbers-mode-relative)
+
+;; display the colored shell output properly without dispalying any wired symbols
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
