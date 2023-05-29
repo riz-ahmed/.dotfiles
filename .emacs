@@ -32,13 +32,13 @@
 
 (set-face-attribute 'default nil :font "Iosevka" :height 200)
 (custom-set-variables
- ;; custom-sfet-variables was added by Custom.
+ ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7" default))
- '(package-selected-packages '(smex gruber-darker-theme)))
+ '(package-selected-packages '(company evil anki-editor mu4e smex gruber-darker-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -59,3 +59,35 @@
 
 ;; display the colored shell output properly without dispalying any wired symbols
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+;; enable autopair minor mode by default
+(electric-pair-mode 1)
+
+;; mail client
+(unless (package-installed-p 'notmuch)
+  (package-refresh-contents)
+  (package-install 'notmuch))
+(require 'notmuch)
+;;(setq notmuch-search-oldest-first nil)  ;; Optional: Show newest emails first
+(setq notmuch-show-logo nil)           ;; Optional: Disable logo in email view
+;; Define account-specific variables
+(setq my-email-account1-address "riz.ahmed@eclipso.de")
+(setq my-email-account1-database "~/Mail/riz.ahmed@eclipso.de") ;; Replace with the path to your account1's notmuch database
+;; Configure notmuch accounts
+(setq notmuch-accounts
+      `((:name "Eclipso"
+               :address ,my-email-account1-address
+               :database ,my-email-account1-database)))
+
+;; Download Evil
+(unless (package-installed-p 'evil)
+  (package-install 'evil))
+
+;; Enable Evil
+(require 'evil)
+;;Exit insert mode by pressing j and then k quickly
+(require 'key-chord)
+(key-chord-mode 1)
+(setq key-chord-two-keys-delay 0.5)
+(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(key-chord-mode 1)
