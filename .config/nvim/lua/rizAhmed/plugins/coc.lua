@@ -176,9 +176,9 @@ keymap("n", "<space>me", ":<C-u>CocList extensions<cr>", opts)
 -- Show commands
 keymap("n", "<space>sc", ":<C-u>CocList commands<cr>", opts)
 -- Find symbol of current document
-keymap("n", "<space>diao", ":<C-u>CocList outline<cr>", opts)
+keymap("n", "<space>o", ":<C-u>CocList outline<cr>", opts)
 -- Search workspace symbols
-keymap("n", "<space>sw", ":<C-u>CocList -I symbols<cr>", opts)
+keymap("n", "<space>s", ":<C-u>CocList -I symbols<cr>", opts)
 -- Do default action for next item
 keymap("n", "<space>j", ":<C-u>CocNext<cr>", opts)
 -- Do default action for previous item

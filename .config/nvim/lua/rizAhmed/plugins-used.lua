@@ -23,6 +23,7 @@ return packer.startup(function(use)
     -- colorscheme
     --use "lunarvim/darkplus.nvim"
     use "Mofiqul/vscode.nvim"
+    use { "ellisonleao/gruvbox.nvim" }
     --use 'Mofiqul/dracula.nvim'
     --use "arcticicestudio/nord-vim"
     -- use 'folke/tokyonight.nvim'
@@ -98,15 +99,15 @@ return packer.startup(function(use)
            vim.o.timeoutlen = 300
        end
     }
-    --
-  --  use({
-	 --  'rose-pine/neovim',
-	 --  as = 'rose-pine',
-	 --  config = function()
-		--   vim.cmd('colorscheme rose-pine')
-	 --  end
-  -- })  
-    --
+    -- markdown viewer in nvim itself
+    use {"ellisonleao/glow.nvim", config = function() require("glow").setup() end}
+
+    -- to display the hex colors in nvim
+    use "norcalli/nvim-colorizer.lua"
+
+    -- git integration in neovim
+    use "tpope/vim-fugitive"
+
     if packer_bootstrap then
         require('packer').sync()
     end

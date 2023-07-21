@@ -69,3 +69,5 @@ keymap("n", "N", "Nzzzv", opts)
 -- move lines around
 -- keymap("v", "<A-j>", ":m '<-2<CR>gv=gv", opts)
 -- keymap("v", "<A-k>", ":m '>+1<CR>gv=gv", opts)
+
+keymap("n", "<ESC><ESC>" ,":noh<CR><ESC>", opts)

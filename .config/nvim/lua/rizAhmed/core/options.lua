@@ -4,8 +4,6 @@ local opt = vim.opt -- for concisness
 opt.number = true -- for displaying the line numbers
 opt.relativenumber = true -- for displaying relative line numbers
 
-opt.noncompatible = true     -- so that nvim is not compatibble with old vi
-
 -- tabs and indentations
 opt.tabstop = 4
 opt.shiftwidth = 4
@@ -49,3 +47,5 @@ opt.wildignorecase = true
 --opt.wildignore+=\*.git/\*
 --
 --
+-- scroll limit on the page
+opt.scrolloff = 8
