@@ -21,7 +21,11 @@ alias \
 	grep="grep --color=auto" \
 	diff="diff --color=auto" \
 	ccat="highlight --out-format=ansi" \
-	ip="ip -color=auto"
+	ip="ip -color=auto" \
+    la="ls -A" \
+    l="ls -CF" \
+    l.="ls -d .*" \
+    lm="ls -1 | less" \
 
 # calling nvim for everything
 alias \

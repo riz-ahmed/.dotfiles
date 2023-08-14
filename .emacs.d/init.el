@@ -32,7 +32,7 @@
 
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-(global-set-key (kbd "<escape>") 'kbd-escape-quit)
+;; (global-set-key (kbd "<escape>") 'kbd-escape-quit)
 
 ;; remove all gui
 (tool-bar-mode -1)	;removing clickable toolstrips
@@ -44,6 +44,7 @@
 (setq visible-bell t)
 
 (set-face-attribute 'default nil :font "Iosevka" :height 170)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -52,7 +53,7 @@
  '(custom-safe-themes
    '("e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7" default))
  '(package-selected-packages
-   '(org-roam-ui move-text all-the-icons-dired org-roam org-bullets use-package rust-mode company evil anki-editor mu4e smex gruber-darker-theme)))
+   '(lsp-mode tree-sitter-langs tree-sitter org-roam-ui move-text all-the-icons-dired org-roam org-bullets use-package rust-mode company evil anki-editor mu4e smex gruber-darker-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -137,7 +138,7 @@
   :init
   (setq org-roam-v2-ack t)
   :custom
-  (org-roam-directory "~/Notes/org-roam")
+  (org-roam-directory "~/Notes/org-roam-notes")
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n i" . org-roam-node-insert)
@@ -206,3 +207,19 @@
                             (copy-from-above-command -1)
                             (forward-char -1)
                             (delete-char -1)))
+
+;; tree-sitter setup
+(require 'tree-sitter)
+(require 'tree-sitter-langs)
+
+;; lsp config
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((c-mode . lsp-deferred)
+         (bash-ts-mode . lsp-deferred))
+  :commands (lsp lsp-deferred))
+
+;; addtional lsp configs
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024))
