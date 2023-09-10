@@ -10,6 +10,10 @@
 (unless package-archive-contents
   (package-referesh-contents))
 
+;; reduce startup time
+;; The default is 800 kilobytes.  Measured in bytes.
+(setq gc-cons-threshold (* 50 1000 1000))
+
 ;; initialise use-package
 (require 'use-package)
 (setq use-package-always-ensure t)
@@ -24,6 +28,9 @@
 ;; remove useless whitespaces while saving a file
 (add-hook 'before-save-hook 'whitespace-cleanup)
 (add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
+
+;; start server from this instance of emacs
+(server-start)
 
 ;; auto-suggestions / completions in the mini-buffer
 (require 'ido)
@@ -56,9 +63,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("e3daa8f18440301f3e54f2093fe15f4fe951986a8628e98dcd781efbec7a46f2" "991ca4dbb23cab4f45c1463c187ac80de9e6a718edc8640003892a2523cb6259" "251ed7ecd97af314cd77b07359a09da12dcd97be35e3ab761d4a92d8d8cf9a71" "636b135e4b7c86ac41375da39ade929e2bd6439de8901f53f88fde7dd5ac3561" "2e05569868dc11a52b08926b4c1a27da77580daa9321773d92822f7a639956ce" "adaf421037f4ae6725aa9f5654a2ed49e2cd2765f71e19a7d26a454491b486eb" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7" default))
+   '("5f128efd37c6a87cd4ad8e8b7f2afaba425425524a68133ac0efd87291d05874" "e3daa8f18440301f3e54f2093fe15f4fe951986a8628e98dcd781efbec7a46f2" "991ca4dbb23cab4f45c1463c187ac80de9e6a718edc8640003892a2523cb6259" "251ed7ecd97af314cd77b07359a09da12dcd97be35e3ab761d4a92d8d8cf9a71" "636b135e4b7c86ac41375da39ade929e2bd6439de8901f53f88fde7dd5ac3561" "2e05569868dc11a52b08926b4c1a27da77580daa9321773d92822f7a639956ce" "adaf421037f4ae6725aa9f5654a2ed49e2cd2765f71e19a7d26a454491b486eb" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7" default))
  '(package-selected-packages
-   '(magit doom-modeline doom-themes zenburn-theme lsp-mode tree-sitter-langs tree-sitter org-roam-ui move-text all-the-icons-dired org-roam org-bullets use-package rust-mode company evil anki-editor mu4e smex gruber-darker-theme)))
+   '(python-mode multiple-cursors magit doom-modeline doom-themes zenburn-theme lsp-mode tree-sitter-langs tree-sitter org-roam-ui move-text all-the-icons-dired org-roam org-bullets use-package rust-mode company mu4e smex gruber-darker-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -67,7 +74,7 @@
  )
 
 ;; active theme
-(load-theme 'doom-gruvbox)
+(load-theme 'doom-palenight t)
 
 ;; line numbers
 (column-number-mode)
@@ -110,6 +117,16 @@
 
 ;; automatically referesh non-file buffers (such as dired on changes)
 (setq global-auto-revert-non-file-buffers t)
+
+;;; multiple cursors
+(require 'multiple-cursors)
+
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->")         'mc/mark-next-like-this)
+(global-set-key (kbd "C-<")         'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<")     'mc/mark-all-like-this)
+(global-set-key (kbd "C-\"")        'mc/skip-to-next-like-this)
+(global-set-key (kbd "C-:")         'mc/skip-to-previous-like-this)
 
 ;; org-mode
 (defun org-mode-setup ()
@@ -207,8 +224,8 @@
   :commands (lsp lsp-deferred))
 
 ;; addtional lsp configs
+;; (setq read-process-output-max (* 1024 1024))
 (setq gc-cons-threshold 100000000)
-(setq read-process-output-max (* 1024 1024))
 
 ;; mail
 (require 'mu4e)
