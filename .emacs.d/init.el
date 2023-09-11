@@ -10,9 +10,6 @@
 (unless package-archive-contents
   (package-referesh-contents))
 
-;; Start Emacs in full screen mode
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
 ;; reduce startup time
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000))
@@ -34,6 +31,48 @@
 
 ;; for better startup performace
 (setq gc-cons-threshold (* 50 1000 1000))
+
+;; god-mode (no more RSI)
+(setq god-mode-enable-function-key-translation nil)
+(require 'god-mode)
+(god-mode)
+(global-set-key (kbd "<escape>") #'god-mode-all)
+(setq god-exempt-major-modes nil)
+(setq god-exempt-predicates nil)
+(defun my-god-mode-update-mode-line ()  ;; viusal indication if when god-mode is active
+  (cond
+   (god-local-mode
+    (set-face-attribute 'mode-line nil
+                        :foreground "#604000"
+                        :background "#fff29a")
+    (set-face-attribute 'mode-line-inactive nil
+                        :foreground "#3f3000"
+                        :background "#fff3da"))
+   (t
+    (set-face-attribute 'mode-line nil
+            :foreground "#0a0a0a"
+            :background "#d7d7d7")
+    (set-face-attribute 'mode-line-inactive nil
+            :foreground "#404148"
+            :background "#efefef"))))
+
+(add-hook 'post-command-hook #'my-god-mode-update-mode-line)
+(defun my-god-mode-toggle-on-overwrite () ;; pause god-mode when in overwrite mode
+  "Toggle god-mode on overwrite-mode."
+  (if (bound-and-true-p overwrite-mode)
+      (god-local-mode-pause)
+    (god-local-mode-resume)))
+
+(add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
+
+(require 'god-mode-isearch)             ;; god-mode in i-search as well
+(define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
+(define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
+
+(define-key god-local-mode-map (kbd ".") #'repeat) ;; vim like dot command for repeating previous action
+(define-key god-local-mode-map (kbd "i") #'god-local-mode) ;; insert into god-mode in a lcoal buffer
+
+(add-to-list 'god-exempt-major-modes 'dired-mode) ;; exempt god-mode in dired buffer
 
 ;; auto-suggestions / completions in the mini-buffer
 (require 'ido)
@@ -68,7 +107,7 @@
  '(custom-safe-themes
    '("5f128efd37c6a87cd4ad8e8b7f2afaba425425524a68133ac0efd87291d05874" "e3daa8f18440301f3e54f2093fe15f4fe951986a8628e98dcd781efbec7a46f2" "991ca4dbb23cab4f45c1463c187ac80de9e6a718edc8640003892a2523cb6259" "251ed7ecd97af314cd77b07359a09da12dcd97be35e3ab761d4a92d8d8cf9a71" "636b135e4b7c86ac41375da39ade929e2bd6439de8901f53f88fde7dd5ac3561" "2e05569868dc11a52b08926b4c1a27da77580daa9321773d92822f7a639956ce" "adaf421037f4ae6725aa9f5654a2ed49e2cd2765f71e19a7d26a454491b486eb" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7" default))
  '(package-selected-packages
-   '(vterm yasnippet dired-ranger dired-range dired-single general which-key evil-collection evil python-mode multiple-cursors magit doom-modeline doom-themes zenburn-theme lsp-mode tree-sitter-langs tree-sitter org-roam-ui move-text all-the-icons-dired org-roam org-bullets use-package rust-mode company mu4e smex gruber-darker-theme)))
+   '(god-mode vterm yasnippet dired-ranger dired-range dired-single general which-key python-mode multiple-cursors magit doom-modeline doom-themes zenburn-theme lsp-mode tree-sitter-langs tree-sitter org-roam-ui move-text all-the-icons-dired org-roam org-bullets use-package rust-mode company mu4e smex gruber-darker-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -126,50 +165,6 @@
 (global-set-key (kbd "C-\"")        'mc/skip-to-next-like-this)
 (global-set-key (kbd "C-:")         'mc/skip-to-previous-like-this)
 
-;; so that evil mode can take over its default C-u scroll keybinding
-(global-set-key (kbd "C-M-u") 'universal-argument)
-
-;; evil-mode settings
-(defun evil-hook ()
-  (dolist (mode '(custom-mode))
-  (add-to-list 'evil-emacs-state-modes mode)))
-
-;; undo using vims 'u'
-(use-package undo-tree
-  :init
-  (global-undo-tree-mode 1))
-
-(use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
-  (setq evil-respect-visual-line-mode t)
-  (setq evil-undo-system 'undo-tree)
-  :config
-  (add-hook 'evil-mode-hook 'evil-hook)
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
-
-(use-package evil-collection
-  :after evil
-  :init
-  (setq evil-collection-company-use-tng nil)  ;; Is this a bug in evil-collection?
-  :custom
-  (evil-collection-outline-bind-tab-p nil)
-  :config
-  (setq evil-collection-mode-list
-        (remove 'lispy evil-collection-mode-list))
-  (evil-collection-init))
-
 ;; setting up which key
 (use-package which-key
   :init (which-key-mode)
@@ -177,43 +172,21 @@
   :config
   (setq which-key-idle-delay 0.3))
 
-;; setting space as leader key
-(use-package general
-  :config
-  (general-evil-setup t)
-
-  (general-create-definer leader-key-def
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-
-  (general-create-definer riz/ctrl-c-keys
-    :prefix "C-c"))
-
-
 ;; org-mode
 (defun org-mode-setup ()
   (org-indent-mode)
-  (setq evil-auto-indent nil)
   (visual-line-mode 1))
 
 (setq org-modules
       '(org-crypt
         org-habit
-        org-bookmark
-        org-eshell))
+        org-bookmark))
 
 (use-package org
   :hook (org-mode . org-mode-setup)
   :config
   (setq org-ellipsis " ▾")
-  (setq org-hide-emphasis-markers t)
-
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'org-next-visible-heading)
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'org-previous-visible-heading)
-
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-j") 'org-metadown)
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-k") 'org-metaup))
+  (setq org-hide-emphasis-markers t))
 
 (use-package org-bullets
   :after org
@@ -271,21 +244,7 @@
         dired-hide-details-hide-symlink-targets nil
         delete-by-moving-to-trash t)
 
-  (autoload 'dired-omit-mode "dired-x")
-
-  (use-package dired-single
-    :defer t)
-
-  (use-package dired-ranger
-    :defer t)
-
-  (evil-collection-define-key 'normal 'dired-mode-map
-    "h" 'dired-single-up-directory
-    "H" 'dired-omit-mode
-    "l" 'dired-single-buffer
-    "y" 'dired-ranger-copy
-    "X" 'dired-ranger-move
-    "p" 'dired-ranger-paste))
+  (autoload 'dired-omit-mode "dired-x"))
 
 ;; move-text
 (require 'move-text)
