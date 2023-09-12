@@ -39,24 +39,7 @@
 (global-set-key (kbd "C-;") #'god-mode-all)
 (setq god-exempt-major-modes nil)
 (setq god-exempt-predicates nil)
-(defun my-god-mode-update-mode-line ()  ;; viusal indication if when god-mode is active
-  (cond
-   (god-local-mode
-    (set-face-attribute 'mode-line nil
-                        :foreground "#604000"
-                        :background "#fff29a")
-    (set-face-attribute 'mode-line-inactive nil
-                        :foreground "#3f3000"
-                        :background "#fff3da"))
-   (t
-    (set-face-attribute 'mode-line nil
-            :foreground "#0a0a0a"
-            :background "#d7d7d7")
-    (set-face-attribute 'mode-line-inactive nil
-            :foreground "#404148"
-            :background "#efefef"))))
 
-(add-hook 'post-command-hook #'my-god-mode-update-mode-line)
 (defun my-god-mode-toggle-on-overwrite () ;; pause god-mode when in overwrite mode
   "Toggle god-mode on overwrite-mode."
   (if (bound-and-true-p overwrite-mode)
@@ -66,13 +49,29 @@
 (add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
 
 (require 'god-mode-isearch)             ;; god-mode in i-search as well
-(define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
-(define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
+(define-key isearch-mode-map (kbd "C-;") #'god-mode-isearch-activate)
+(define-key god-mode-isearch-map (kbd "C-;") #'god-mode-isearch-disable)
 
 (define-key god-local-mode-map (kbd ".") #'repeat) ;; vim like dot command for repeating previous action
 (define-key god-local-mode-map (kbd "i") #'god-local-mode) ;; insert into god-mode in a lcoal buffer
 
 (add-to-list 'god-exempt-major-modes 'dired-mode) ;; exempt god-mode in dired buffer
+
+(global-set-key (kbd "C-x C-1") #'delete-other-windows)
+(global-set-key (kbd "C-x C-2") #'split-window-below)
+(global-set-key (kbd "C-x C-3") #'split-window-right)
+(global-set-key (kbd "C-x C-0") #'delete-window)
+
+(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+
+(custom-set-faces
+ '(god-mode-lighter ((t (:inherit error)))))
+
+(defun my-god-mode-update-cursor-type ()
+  (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+
+(add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 
 ;; auto-suggestions / completions in the mini-buffer
 (require 'ido)
@@ -117,6 +116,10 @@
 
 ;; active theme
 (load-theme 'doom-palenight t)
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
 
 ;; line numbers
 (column-number-mode)
