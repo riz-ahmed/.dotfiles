@@ -36,7 +36,7 @@
 (setq god-mode-enable-function-key-translation nil)
 (require 'god-mode)
 (god-mode)
-(global-set-key (kbd "<escape>") #'god-mode-all)
+(global-set-key (kbd "C-;") #'god-mode-all)
 (setq god-exempt-major-modes nil)
 (setq god-exempt-predicates nil)
 (defun my-god-mode-update-mode-line ()  ;; viusal indication if when god-mode is active
