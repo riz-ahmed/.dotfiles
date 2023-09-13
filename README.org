@@ -1,9 +1,11 @@
 * .dotfiles
-just my dotfiles with my personal preference on setting up Arch with all the apps set up to my taste
-
+- Just my dotfiles with my personal preference on setting up Arch Linux with all the apps set up to my taste
+- There is nothing special about this, just copied stuff from here and there
+  
 * Installs
-** I am primarily using Emacs as my daily driver for all of my development, notetaking and various other tasks
-
+- I am primarily using Emacs as my daily driver for all of my development, notetaking and various other tasks
+- Was earlier using VIM and/ Neovim on Tmux multiplexer as main development environment
+  
 * Quick Start
 #+begin_src shell
   git clone git@github.com:riz-ahmed/.dotfiles.git ./
