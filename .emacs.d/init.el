@@ -8,7 +8,6 @@
 
 ;; set username
 (setq user-full-name "rizwan ahmed afzal")
-(setq user-mail-address "rizwan@synopsys.com")
 
 ;; ask y or n instead of yes or no
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -48,6 +47,7 @@
 (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up
 (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v"))   ;; scroll down
 
+;; mapping for reduced RSIs
 (define-key key-translation-map (kbd "C-;") (kbd "C-x"))
 (define-key key-translation-map (kbd "C-.") (kbd "C-c"))
 
@@ -66,10 +66,6 @@
 
 ;; display colored shell properly without any wiered symbols
 (add-hook 'shell-mode-hook 'ansi-color=for-comint-mode-on)
-
-;; enable minibuffer completion
-;; (setq fido-mode t)
-;; (setq icomplete-vertical-mode t)
 
 ;; start the initial frame maximized (start emacs window maximised)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
