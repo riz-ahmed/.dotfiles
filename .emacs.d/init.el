@@ -6,9 +6,6 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
-;; set username
-(setq user-full-name "rizwan ahmed afzal")
-
 ;; ask y or n instead of yes or no
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -184,10 +181,6 @@
 (global-set-key (kbd "M-p") 'move-text-up)
 (global-set-key (kbd "M-n") 'move-text-down)
 
-;; move around windows using SHIFT + ARROW keys
-;; (when (fboundp 'windmove-default-keybindings)
-;;   (windmove-default-keybindings))
-
 ;; will display the funtion def in the menu bar
 (add-hook 'my-mode-hook 'imenu-add-menubar-index)
 (global-set-key (kbd "C-S-f") 'imenu)
@@ -197,16 +190,6 @@
 
 ;; use spaces instead of tabs / ensures uniformity among various platforms
 (setq-default indent-tabs-mode nil)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "ba4ab079778624e2eadbdc5d9345e6ada531dc3febeb24d257e6d31d5ed02577" default))
- '(package-selected-packages
-   '(multiple-cursors god-mode zenburn-theme org-roam-ui gruber-darker-theme tree-sitter-langs tree-sitter all-the-icons-dired markdown-mode hydra move-text company)))
-
 
 ;; copy from the line above
 (autoload 'copy-from-above-command "misc"
