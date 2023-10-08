@@ -1,4 +1,4 @@
-;; Set up package.el to work with MELPA
+; Set up package.el to work with MELPA
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -6,12 +6,58 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
+;; set username
+(setq user-full-name "rizwan ahmed afzal")
+;; (setq user-mail-address "")
+
 ;; ask y or n instead of yes or no
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;; using async wherever possible
+(use-package async
+  :ensure t
+  :init (dired-async-mode 1))
+
+;; preserve the point position while scrolling
+(setq scroll-preserve-screen-position t)
+
+;; Vertical Scroll
+(setq scroll-step 1)
+(setq scroll-margin 1)
+(setq scroll-conservatively 101)
+(setq scroll-up-aggressively 0.01)
+(setq scroll-down-aggressively 0.01)
+(setq auto-window-vscroll nil)
+(setq fast-but-imprecise-scrolling nil)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-progressive-speed nil)
+
+;; Show Keystrokes in Progress Instantly
+(setq echo-keystrokes 0.1)
+
+;; compilation mode in better colors
+(use-package fancy-compilation :config (fancy-compilation-mode))
+
+;; self documenting suggestions
+(use-package which-key
+  :ensure t
+  :config
+    (which-key-mode))
+
+;; camleCase strings will be treated as separate words
+(global-subword-mode 1)
+
 ;; speed up emacs startup
 ;; The default is 800 kilobytes.  Measured in bytes.
-(setq gc-cons-threshold (* 50 1000 1000))
+(setq gc-cons-threshold (* 50 1000 1000)) ;; this variable controls the garbare collection threshold
+
+;; reducing RSI
+(global-set-key (kbd "C-;") ctl-x-map)  ;; like having two C-x prefix keys
+
+;; Unbind unneeded keys
+(global-set-key (kbd "C-x C-z") nil)    ;; also disable (supend-frame) command. Very annoying at times
+(global-set-key (kbd "C-z") nil)        ;; (suspend-frame) also bound to this combination
+(global-set-key (kbd "C-; C-z") nil)    ;; (supend-frame) also mapped to C-; C-z due to C-; remap
 
 ;; Remove useless whitespace before saving a file
 (add-hook 'before-save-hook 'whitespace-cleanup)
@@ -22,7 +68,7 @@
 
 ;; inhibit the startup screen
 (setq inhibit-startup-screen t)
-;;
+
 ;; remove all gui
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -36,7 +82,7 @@
 (add-hook 'c-mode-hook (lambda ()
                          (interactive)
                          (c-toggle-comment-style -1)))
-
+}
 ;; set font size
 (set-face-attribute 'default nil :font "Iosevka" :height 140)
 
@@ -44,12 +90,8 @@
 (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up
 (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v"))   ;; scroll down
 
-;; mapping for reduced RSIs
-(define-key key-translation-map (kbd "C-;") (kbd "C-x"))
-(define-key key-translation-map (kbd "C-.") (kbd "C-c"))
-
 ;; set a theme
-(load-theme 'zenburn t)
+(load-theme 'modus-vivendi)
 
 ;; line numbers
 (column-number-mode)
@@ -167,6 +209,15 @@
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 
+;; better icons support
+(let ((installed (package-installed-p 'all-the-icons)))
+  (use-package all-the-icons)
+  (unless installed (all-the-icons-install-fonts)))
+
+(use-package all-the-icons-dired
+  :after all-the-icons
+  :hook (dired-mode . all-the-icons-dired-mode))
+
 ;; dired - list directories first
 (setq dired-listing-switches "-agho --group-directories-first"
       dired-omit-files "^\\.[^.].*"
@@ -253,3 +304,9 @@
             browse-url-generic-args     cmd-args
             browse-url-browser-function 'browse-url-generic
             search-web-default-browser 'browse-url-generic))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
