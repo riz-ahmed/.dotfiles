@@ -8,7 +8,7 @@
 
 ;; set username
 (setq user-full-name "rizwan ahmed afzal")
-;; (setq user-mail-address "")
+(setq user-mail-address "rizwan@synopsys.com")
 
 ;; ask y or n instead of yes or no
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -32,6 +32,7 @@
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 (setq mouse-wheel-progressive-speed nil)
 
+
 ;; Show Keystrokes in Progress Instantly
 (setq echo-keystrokes 0.1)
 
@@ -50,9 +51,6 @@
 ;; speed up emacs startup
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000)) ;; this variable controls the garbare collection threshold
-
-;; reducing RSI
-(global-set-key (kbd "C-;") ctl-x-map)  ;; like having two C-x prefix keys
 
 ;; Unbind unneeded keys
 (global-set-key (kbd "C-x C-z") nil)    ;; also disable (supend-frame) command. Very annoying at times
@@ -82,9 +80,9 @@
 (add-hook 'c-mode-hook (lambda ()
                          (interactive)
                          (c-toggle-comment-style -1)))
-}
+
 ;; set font size
-(set-face-attribute 'default nil :font "Iosevka" :height 140)
+(set-face-attribute 'default nil :font "Iosevka" :height 120)
 
 ;; useful global keymaps
 (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up
@@ -242,6 +240,16 @@
 ;; use spaces instead of tabs / ensures uniformity among various platforms
 (setq-default indent-tabs-mode nil)
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "ba4ab079778624e2eadbdc5d9345e6ada531dc3febeb24d257e6d31d5ed02577" default))
+ '(package-selected-packages
+   '(fancy-compilation which-key async multiple-cursors god-mode zenburn-theme org-roam-ui gruber-darker-theme tree-sitter-langs tree-sitter all-the-icons-dired markdown-mode hydra move-text company)))
+
 ;; copy from the line above
 (autoload 'copy-from-above-command "misc"
   "Copy characters from previous nonblank line, starting just above point.
@@ -310,3 +318,46 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; reducing RSI
+(global-set-key (kbd "C-.") ctl-x-map)  ;; like having two C-x prefix keys
+
+;; Start God-Mode from M-x when needed
+(setq god-mode-enable-function-key-translation nil)
+(require 'god-mode)
+
+(global-set-key (kbd "<escape>") #'god-mode-all)
+(custom-set-faces
+ '(god-mode-lighter ((t (:inherit error)))))
+(defun my-god-mode-toggle-on-overwrite ()
+  "Toggle god-mode on overwrite-mode."
+  (if (bound-and-true-p overwrite-mode)
+      (god-local-mode-pause)
+    (god-local-mode-resume)))
+
+(add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
+
+(require 'god-mode-isearch)
+(define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
+(define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
+(defun my-god-mode-self-insert ()
+  (interactive)
+  (if (and (bolp)
+           (eq major-mode 'org-mode))
+      (call-interactively 'org-self-insert-command)
+    (call-interactively 'god-mode-self-insert)))
+
+(define-key god-local-mode-map [remap self-insert-command] #'my-god-mode-self-insert)
+
+(define-key god-local-mode-map (kbd ".") #'repeat)
+(define-key god-local-mode-map (kbd "i") #'god-local-mode)
+
+(global-set-key (kbd "C-x C-1") #'delete-other-windows)
+(global-set-key (kbd "C-x C-2") #'split-window-below)
+(global-set-key (kbd "C-x C-3") #'split-window-right)
+(global-set-key (kbd "C-x C-0") #'delete-window)
+
+(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+
+(add-to-list 'god-exempt-major-modes 'dired-mode)
