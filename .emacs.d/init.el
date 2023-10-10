@@ -1,4 +1,4 @@
-; Set up package.el to work with MELPA
+;; Set up package.el to work with MELPA
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -27,7 +27,6 @@
 (setq fast-but-imprecise-scrolling nil)
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 (setq mouse-wheel-progressive-speed nil)
-
 
 ;; Show Keystrokes in Progress Instantly
 (setq echo-keystrokes 0.1)
@@ -78,7 +77,7 @@
                          (c-toggle-comment-style -1)))
 
 ;; set font size
-(set-face-attribute 'default nil :font "Iosevka" :height 120)
+(set-face-attribute 'default nil :font "Iosevka" :height 140)
 
 ;; useful global keymaps
 (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up
@@ -98,7 +97,7 @@
 (ido-mode 1)
 
 ;; display colored shell properly without any wiered symbols
-(add-hook 'shell-mode-hook 'ansi-color=for-comint-mode-on)
+;; (add-hook 'shell-mode-hook 'ansi-color=for-comint-mode-on)
 
 ;; start the initial frame maximized (start emacs window maximised)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -116,6 +115,7 @@
 (setq make-backup-files nil)
 (setq backup-inhibited t)
 (setq auto-save-default nil)
+(setq create-lockfiles nil)
 
 ;; Save backup files in a dedicated directory
 (setq backup-directory-alist '(("." . "~/.saves")))
@@ -236,16 +236,6 @@
 ;; use spaces instead of tabs / ensures uniformity among various platforms
 (setq-default indent-tabs-mode nil)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "ba4ab079778624e2eadbdc5d9345e6ada531dc3febeb24d257e6d31d5ed02577" default))
- '(package-selected-packages
-   '(fancy-compilation which-key async multiple-cursors god-mode zenburn-theme org-roam-ui gruber-darker-theme tree-sitter-langs tree-sitter all-the-icons-dired markdown-mode hydra move-text company)))
-
 ;; copy from the line above
 (autoload 'copy-from-above-command "misc"
   "Copy characters from previous nonblank line, starting just above point.
@@ -283,40 +273,8 @@
 ;; allowing for password prompt in minibuffer
 (setq epa-pinentry-mode 'loopback)
 
-;; run-cmd from within EMACS
-(defun run-cmdexe ()
-      (interactive)
-      (let ((shell-file-name "cmd.exe"))
-        (shell "*cmd.exe*")))
-
-;; use windows clipboard
-(defun copy-selected-text (start end)
-  (interactive "r")
-    (if (use-region-p)
-        (let ((text (buffer-substring-no-properties start end)))
-          (shell-command (concat "echo '" text "' | clip.exe")))))
-
-;; WSL-specific setup
-(when (and (eq system-type 'gnu/linux)
-           (getenv "WSLENV"))
-
-  ;; Teach Emacs how to open links in your default Windows browser (firefox)
-  (let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
-        (cmd-args '("/c" "start")))
-    (when (file-exists-p cmd-exe)
-      (setq browse-url-generic-program  cmd-exe
-            browse-url-generic-args     cmd-args
-            browse-url-browser-function 'browse-url-generic
-            search-web-default-browser 'browse-url-generic))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;; reducing RSI
-(global-set-key (kbd "C-.") ctl-x-map)  ;; like having two C-x prefix keys
+(global-set-key (kbd "C-;") ctl-x-map)  ;; like having two C-x prefix keys
 
 ;; Start God-Mode from M-x when needed
 (setq god-mode-enable-function-key-translation nil)
