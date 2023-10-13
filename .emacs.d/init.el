@@ -1,4 +1,4 @@
-;; Set up package.el to work with MELPA
+; Set up package.el to work with MELPA
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -6,8 +6,18 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+;; set username
+(setq user-full-name "rizwan ahmed afzal")
+(setq user-mail-address "rizwan@synopsys.com")
+
 ;; ask y or n instead of yes or no
 (fset 'yes-or-no-p 'y-or-n-p)
+
+;; make iBuffer the defalt
+(defalias 'list-buffers 'ibuffer)       ;; improved version of list-buffers function which adds colors to the display
 
 ;; using async wherever possible
 (use-package async
@@ -31,9 +41,6 @@
 ;; Show Keystrokes in Progress Instantly
 (setq echo-keystrokes 0.1)
 
-;; compilation mode in better colors
-(use-package fancy-compilation :config (fancy-compilation-mode))
-
 ;; self documenting suggestions
 (use-package which-key
   :ensure t
@@ -44,20 +51,16 @@
 (global-subword-mode 1)
 
 ;; speed up emacs startup
-;; The default is 800 kilobytes.  Measured in bytes.
-(setq gc-cons-threshold (* 50 1000 1000)) ;; this variable controls the garbare collection threshold
+(setq gc-cons-threshold (* 50 1000 1000)) ;; this variable controls the garbare collection threshold ;; The default is 800 kilobytes.  Measured in bytes.
 
 ;; Unbind unneeded keys
 (global-set-key (kbd "C-x C-z") nil)    ;; also disable (supend-frame) command. Very annoying at times
 (global-set-key (kbd "C-z") nil)        ;; (suspend-frame) also bound to this combination
-(global-set-key (kbd "C-; C-z") nil)    ;; (supend-frame) also mapped to C-; C-z due to C-; remap
 
 ;; Remove useless whitespace before saving a file
 (add-hook 'before-save-hook 'whitespace-cleanup)
 (add-hook 'before-save-hook (lambda() (delete-trailing-whitespace)))
 
-(require 'use-package)
-(setq use-package-always-ensure t)
 
 ;; inhibit the startup screen
 (setq inhibit-startup-screen t)
@@ -97,7 +100,7 @@
 (ido-mode 1)
 
 ;; display colored shell properly without any wiered symbols
-;; (add-hook 'shell-mode-hook 'ansi-color=for-comint-mode-on)
+(add-hook 'shell-mode-hook 'ansi-color=for-comint-mode-on)
 
 ;; start the initial frame maximized (start emacs window maximised)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -115,7 +118,6 @@
 (setq make-backup-files nil)
 (setq backup-inhibited t)
 (setq auto-save-default nil)
-(setq create-lockfiles nil)
 
 ;; Save backup files in a dedicated directory
 (setq backup-directory-alist '(("." . "~/.saves")))
@@ -203,7 +205,7 @@
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 
-;; better icons support
+;; display icons in dired-mode
 (let ((installed (package-installed-p 'all-the-icons)))
   (use-package all-the-icons)
   (unless installed (all-the-icons-install-fonts)))
@@ -236,30 +238,15 @@
 ;; use spaces instead of tabs / ensures uniformity among various platforms
 (setq-default indent-tabs-mode nil)
 
-;; copy from the line above
-(autoload 'copy-from-above-command "misc"
-  "Copy characters from previous nonblank line, starting just above point.
-
-  \(fn &optional arg)"
-  'interactive)
-
-(global-set-key [up] 'copy-from-above-command) ;; up arrow key will copy the rest of the line forward
-
-(global-set-key [down] (lambda ()	;; now the down arrow key will copy from the line above
-                         (interactive)
-                         (forward-line 1)
-                         (open-line 1)
-                         (copy-from-above-command)))
-
-(global-set-key [right] (lambda ()	;; right arrow key will copy one character from above
-                          (interactive)
-                          (copy-from-above-command 1)))
-
-(global-set-key [left] (lambda ()	;; left arrow key will copy from above, backwards!!
-                         (interactive)
-                         (copy-from-above-command -1)
-                         (forward-char -1)
-                         (delete-char -1)))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "ba4ab079778624e2eadbdc5d9345e6ada531dc3febeb24d257e6d31d5ed02577" default))
+ '(package-selected-packages
+   '(which-key async multiple-cursors god-mode zenburn-theme org-roam-ui gruber-darker-theme tree-sitter-langs tree-sitter all-the-icons-dired markdown-mode hydra move-text company)))
 
 ;; tree-sitter configuration
 (require 'tree-sitter)
@@ -273,17 +260,48 @@
 ;; allowing for password prompt in minibuffer
 (setq epa-pinentry-mode 'loopback)
 
+;; run-cmd from within EMACS
+(defun run-cmdexe ()
+      (interactive)
+      (let ((shell-file-name "cmd.exe"))
+        (shell "*cmd.exe*")))
+
+;; use windows clipboard
+(defun copy-selected-text (start end)
+  (interactive "r")
+    (if (use-region-p)
+        (let ((text (buffer-substring-no-properties start end)))
+          (shell-command (concat "echo '" text "' | clip.exe")))))
+
+;; WSL-specific setup
+(when (and (eq system-type 'gnu/linux)
+           (getenv "WSLENV"))
+
+  ;; Teach Emacs how to open links in your default Windows browser (firefox)
+  (let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
+        (cmd-args '("/c" "start")))
+    (when (file-exists-p cmd-exe)
+      (setq browse-url-generic-program  cmd-exe
+            browse-url-generic-args     cmd-args
+            browse-url-browser-function 'browse-url-generic
+            search-web-default-browser 'browse-url-generic))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(god-mode-lighter ((t (:inherit error)))))
+
 ;; reducing RSI
-(global-set-key (kbd "C-;") ctl-x-map)  ;; like having two C-x prefix keys
+(repeat-mode 1)                         ;; to disable use C-g whenever active (use M-x: describe-repeat-maps to get a complete list of commands that are activated in repeat-mode)
 
 ;; Start God-Mode from M-x when needed
 (setq god-mode-enable-function-key-translation nil)
 (require 'god-mode)
 
-(global-set-key (kbd "<escape>") #'god-mode-all)
-(custom-set-faces
- '(god-mode-lighter ((t (:inherit error)))))
-(defun my-god-mode-toggle-on-overwrite ()
+(global-set-key (kbd "C-.") #'god-mode-all) ;; enable / disable god-mode in a buffer
+
+(defun my-god-mode-toggle-on-overwrite () ;; behaviour when in overwrite mode
   "Toggle god-mode on overwrite-mode."
   (if (bound-and-true-p overwrite-mode)
       (god-local-mode-pause)
@@ -291,9 +309,9 @@
 
 (add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
 
-(require 'god-mode-isearch)
-(define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
-(define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
+(require 'god-mode-isearch)             ;; god-mode intergration with i-search
+(define-key isearch-mode-map (kbd "C-.") #'god-mode-isearch-activate)
+(define-key god-mode-isearch-map (kbd "C-.") #'god-mode-isearch-disable)
 (defun my-god-mode-self-insert ()
   (interactive)
   (if (and (bolp)
@@ -303,15 +321,24 @@
 
 (define-key god-local-mode-map [remap self-insert-command] #'my-god-mode-self-insert)
 
-(define-key god-local-mode-map (kbd ".") #'repeat)
-(define-key god-local-mode-map (kbd "i") #'god-local-mode)
+(define-key god-local-mode-map (kbd ".") #'repeat) ;; vim like dot repeating command
+(define-key god-local-mode-map (kbd "i") #'god-local-mode) ;; insert into god-mode in the local buffer
 
-(global-set-key (kbd "C-x C-1") #'delete-other-windows)
+(global-set-key (kbd "C-x C-1") #'delete-other-windows) ;; navigations are easier with the current and following keybindings
 (global-set-key (kbd "C-x C-2") #'split-window-below)
 (global-set-key (kbd "C-x C-3") #'split-window-right)
 (global-set-key (kbd "C-x C-0") #'delete-window)
 
-(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+(define-key god-local-mode-map (kbd "[") #'backward-paragraph) ;; for easier paragraph navigation
 (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
 
-(add-to-list 'god-exempt-major-modes 'dired-mode)
+(add-to-list 'god-exempt-major-modes 'dired-mode) ;; exempt god-mode in dired-mode
+(add-to-list 'god-exempt-major-modes 'compilation-mode) ;; exempt god-mode in compilation mode
+
+;; (defun my-god-mode-update-cursor-type () ;; visual indication when entering god-mode
+;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+
+;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+
+(custom-set-faces
+ '(god-mode-lighter ((t (:inherit error))))) ;; another visual indication on status line if god-mode is active
