@@ -9,10 +9,6 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-;; set username
-(setq user-full-name "rizwan ahmed afzal")
-(setq user-mail-address "rizwan@synopsys.com")
-
 ;; ask y or n instead of yes or no
 (fset 'yes-or-no-p 'y-or-n-p)
 
