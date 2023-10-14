@@ -57,7 +57,6 @@
 (add-hook 'before-save-hook 'whitespace-cleanup)
 (add-hook 'before-save-hook (lambda() (delete-trailing-whitespace)))
 
-
 ;; inhibit the startup screen
 (setq inhibit-startup-screen t)
 
@@ -83,7 +82,7 @@
 (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v"))   ;; scroll down
 
 ;; set a theme
-(load-theme 'modus-vivendi)
+(load-theme 'modus-operandi)
 
 ;; line numbers
 (column-number-mode)
@@ -197,9 +196,9 @@
 (global-set-key (kbd "C-\"")        'mc/skip-to-next-like-this)
 (global-set-key (kbd "C-:")         'mc/skip-to-previous-like-this)
 
-;; auto-completion
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
+;; ;; auto-completion
+;; (require 'company)
+;; (add-hook 'after-init-hook 'global-company-mode)
 
 ;; display icons in dired-mode
 (let ((installed (package-installed-p 'all-the-icons)))
@@ -255,38 +254,6 @@
 
 ;; allowing for password prompt in minibuffer
 (setq epa-pinentry-mode 'loopback)
-
-;; run-cmd from within EMACS
-(defun run-cmdexe ()
-      (interactive)
-      (let ((shell-file-name "cmd.exe"))
-        (shell "*cmd.exe*")))
-
-;; use windows clipboard
-(defun copy-selected-text (start end)
-  (interactive "r")
-    (if (use-region-p)
-        (let ((text (buffer-substring-no-properties start end)))
-          (shell-command (concat "echo '" text "' | clip.exe")))))
-
-;; WSL-specific setup
-(when (and (eq system-type 'gnu/linux)
-           (getenv "WSLENV"))
-
-  ;; Teach Emacs how to open links in your default Windows browser (firefox)
-  (let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
-        (cmd-args '("/c" "start")))
-    (when (file-exists-p cmd-exe)
-      (setq browse-url-generic-program  cmd-exe
-            browse-url-generic-args     cmd-args
-            browse-url-browser-function 'browse-url-generic
-            search-web-default-browser 'browse-url-generic))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(god-mode-lighter ((t (:inherit error)))))
 
 ;; reducing RSI
 (repeat-mode 1)                         ;; to disable use C-g whenever active (use M-x: describe-repeat-maps to get a complete list of commands that are activated in repeat-mode)
