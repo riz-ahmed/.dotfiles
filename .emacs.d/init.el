@@ -81,8 +81,36 @@
 (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up
 (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v"))   ;; scroll down
 
+;; customize modus theme
+(setq modus-themes-mode-line '(borderless))
+(setq modus-themes-region '(bg-only no-extend)) ;; highlighting text
+(setq modus-themes-bold-constructs t)           ;; bolded text whenever possible
+(setq modus-themes-italic-constructs t)           ;; italic text whenever possible
+(setq modus-themes-paren-match '(bold intense underline))           ;; matching parens
+;; (setq modus-themes-syntax '(faint))           ;;
+;; (setq modus-themes-syntax '(alt-syntax))           ;;
+(setq modus-themes-syntax '(faint green-strings yellow-comments))           ;;
+
+;; modus theme customisations for org-mode
+(setq modus-themes-headings
+      '((1. (rainbow overline background 1.4))
+        (2. (rainbow background 1.3))
+        (3. (rainbow bold 1.2))
+        (t. (semilight 1.1))))
+
+(setq modus-themes-scale-headings t)     ;; important when modus theme is customised
+
+(setq modus-themes-org-blocks 'gray-background)
+;; (setq modus-themes-org-blocks 'tinted-background)
+
 ;; set a theme
-(load-theme 'modus-operandi)
+(load-theme 'modus-vivendi t)
+
+;; display time on the mode line
+(display-time-mode 1)
+
+;; display battery level on the mode line
+(display-battery-mode 1)
 
 ;; line numbers
 (column-number-mode)
@@ -238,8 +266,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "ba4ab079778624e2eadbdc5d9345e6ada531dc3febeb24d257e6d31d5ed02577" default))
  '(package-selected-packages
    '(which-key async multiple-cursors god-mode zenburn-theme org-roam-ui gruber-darker-theme tree-sitter-langs tree-sitter all-the-icons-dired markdown-mode hydra move-text company)))
 
@@ -304,4 +330,9 @@
 ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 
 (custom-set-faces
- '(god-mode-lighter ((t (:inherit error))))) ;; another visual indication on status line if god-mode is active
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(god-mode-lighter ((t (:inherit error)))))
+ ;; another visual indication on status line if god-mode is active

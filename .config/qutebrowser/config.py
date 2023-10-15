@@ -305,5 +305,5 @@ config.load_autoconfig()
 
 c.colors.webpage.darkmode.enabled=True
 c.fonts.default_size="15pt"
-c.zoom.default=150
+c.zoom.default=120
 config.bind('M', 'hint links spawn mpv {hint-url}')
