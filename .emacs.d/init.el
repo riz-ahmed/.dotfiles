@@ -81,30 +81,59 @@
 (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up
 (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v"))   ;; scroll down
 
-;; customize modus theme
-(setq modus-themes-mode-line '(borderless))
-(setq modus-themes-region '(bg-only no-extend)) ;; highlighting text
-(setq modus-themes-bold-constructs t)           ;; bolded text whenever possible
-(setq modus-themes-italic-constructs t)           ;; italic text whenever possible
-(setq modus-themes-paren-match '(bold intense underline))           ;; matching parens
-;; (setq modus-themes-syntax '(faint))           ;;
-;; (setq modus-themes-syntax '(alt-syntax))           ;;
-(setq modus-themes-syntax '(faint green-strings yellow-comments))           ;;
-
-;; modus theme customisations for org-mode
-(setq modus-themes-headings
-      '((1. (rainbow overline background 1.4))
-        (2. (rainbow background 1.3))
-        (3. (rainbow bold 1.2))
-        (t. (semilight 1.1))))
-
-(setq modus-themes-scale-headings t)     ;; important when modus theme is customised
-
-(setq modus-themes-org-blocks 'gray-background)
 ;; (setq modus-themes-org-blocks 'tinted-background)
 
 ;; set a theme
 (load-theme 'modus-vivendi t)
+
+(when (and (eq system-type 'gnu/linux) (string= (getenv "GUIX_PROFILE") "riz"))
+    ;; customize modus theme
+  (setq modus-themes-mode-line '(borderless))
+  (setq modus-themes-region '(bg-only no-extend)) ;; highlighting text
+  (setq modus-themes-bold-constructs t)           ;; bolded text whenever possible
+  (setq modus-themes-italic-constructs t)           ;; italic text whenever possible
+  (setq modus-themes-paren-match '(bold intense underline))           ;; matching parens
+  ;; (setq modus-themes-syntax '(faint))           ;;
+  ;; (setq modus-themes-syntax '(alt-syntax))           ;;
+  (setq modus-themes-syntax '(faint green-strings yellow-comments))           ;;
+
+  ;; modus theme customisations for org-mode
+  (setq modus-themes-headings
+        '((1. (rainbow overline background 1.4))
+          (2. (rainbow background 1.3))
+          (3. (rainbow bold 1.2))
+          (t. (semilight 1.1))))
+
+  (setq modus-themes-scale-headings t)     ;; important when modus theme is customised
+
+  (setq modus-themes-org-blocks 'gray-background)
+
+  (load-theme 'modus-vivendi t))
+
+;; WSL-specific setup
+(when (and (eq system-type 'gnu/linux)
+           (getenv "WSLENV"))
+
+  ;; Teach Emacs how to open links in your default Windows browser (firefox)
+  (let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
+        (cmd-args '("/c" "start")))
+    (when (file-exists-p cmd-exe)
+      (setq browse-url-generic-program  cmd-exe
+            browse-url-generic-args     cmd-args
+            browse-url-browser-function 'browse-url-generic
+            search-web-default-browser 'browse-url-generic)))
+  ;; run-cmd from within EMACS
+  (defun run-cmdexe ()
+      (interactive)
+      (let ((shell-file-name "cmd.exe"))
+        (shell "*cmd.exe*")))
+
+  ;; use windows clipboard
+  (defun copy-selected-text (start end)
+  (interactive "r")
+    (if (use-region-p)
+        (let ((text (buffer-substring-no-properties start end)))
+          (shell-command (concat "echo '" text "' | clip.exe"))))))
 
 ;; display time on the mode line
 (display-time-mode 1)
