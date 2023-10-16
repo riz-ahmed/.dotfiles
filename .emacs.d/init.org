@@ -1,5 +1,5 @@
 #+title Emacs Configuration
-#+PROPERTY: header-args:emacs-lisp :tangle ./init-new.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 
 * Initialise packages
 #+begin_src emacs-lisp
@@ -60,10 +60,10 @@
 
 * Minibuffer
 #+begin_src emacs-lisp
-;; minibuffer completions
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mod
+  ;; minibuffer completions
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (ido-mode 1)
 #+end_src
 
 * Dired / File Management
@@ -106,36 +106,65 @@
 
 * Set Locale
 #+begin_src emacs-lisp
-(set-language-environment 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(setq locale-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-selection-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
+  (set-language-environment 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (setq locale-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
 #+end_src
 
 * Fonts
 #+begin_src emacs-lisp
-(set-face-attribute 'default nil :font "Iosevka" :height 140)
+  (set-face-attribute 'default nil :font "Iosevka" :height 140)
 #+end_src
 
 * Progaramming
 #+begin_src emacs-lisp
-;; c-style comments
-(add-hook 'c-mode-hook (lambda ()
-                         (interactive)
-                         (c-toggle-comment-style -1)))
+  ;; c-style comments
+  (add-hook 'c-mode-hook (lambda ()
+                           (interactive)
+                           (c-toggle-comment-style -1)))
 #+end_src
 
 * Unbind nuisance keybindings
 #+begin_src emacs-lisp
-(global-set-key (kbd "C-x C-z") nil)    ;; disable (supend-frame) command. Very annoying at times
-(global-set-key (kbd "C-z") nil)        ;; (suspend-frame) also bound to this combination
+  (global-set-key (kbd "C-x C-z") nil)    ;; disable (supend-frame) command. Very annoying at times
+  (global-set-key (kbd "C-z") nil)        ;; (suspend-frame) also bound to this combination
 #+end_src
 
 * Theme
 #+begin_src emacs-lisp
-(load-theme 'doom-palenight t)
+  ;; for GNU/Guix
+  (when (eq system-type 'gnu/linux)
+    ;; customize modus theme
+    (setq modus-themes-mode-line '(borderless))
+    (setq modus-themes-region '(bg-only no-extend)) ;; highlighting text
+    (setq modus-themes-bold-constructs t)           ;; bolded text whenever possible
+    (setq modus-themes-italic-constructs t)           ;; italic text whenever possible
+    (setq modus-themes-paren-match '(bold intense underline))           ;; matching parens
+    ;; (setq modus-themes-syntax '(faint))           ;;
+    ;; (setq modus-themes-syntax '(alt-syntax))           ;;
+    (setq modus-themes-syntax '(faint green-strings yellow-comments))           ;;
+
+    ;; modus theme customisations for org-mode
+    (setq modus-themes-headings
+          '((1. (rainbow overline background 1.4))
+            (2. (rainbow background 1.3))
+            (3. (rainbow bold 1.2))
+            (t. (semilight 1.1))))
+
+    (setq modus-themes-scale-headings t)     ;; important when modus theme is customised
+
+    (setq modus-themes-org-blocks 'gray-background)
+
+    (load-theme 'modus-vivendi t))
+
+
+  ;; for WSL
+  (when (and (eq system-type 'gnu/linux)
+             (getenv "WSLENV"))
+    (load-theme 'doom-palenight t))
 #+end_src
 
 * Scrolling
@@ -161,141 +190,141 @@
 * Org-mode
 ** org-mode
 #+begin_src emacs-lisp
-(defun org-mode-setup ()
-  (org-indent-mode)
-  (visual-line-mode 1))
+  (defun org-mode-setup ()
+    (org-indent-mode)
+    (visual-line-mode 1))
 
-(setq org-modules
-      '(org-crypt
-        org-habit
-        org-bookmark
-        org-eshell
-        ))
+  (setq org-modules
+        '(org-crypt
+          org-habit
+          org-bookmark
+          org-eshell
+          ))
 
-(use-package org
-  :hook (org-mode . org-mode-setup)
-  :config (setq org-ellipsis " ▾")
-  (setq org-directory "~/Notes/org-mode")
-  (setq org-agenda-start-with-log-mode t)
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t))
+  (use-package org
+    :hook (org-mode . org-mode-setup)
+    :config (setq org-ellipsis " ▾")
+    (setq org-directory "~/Notes/org-mode")
+    (setq org-agenda-start-with-log-mode t)
+    (setq org-log-done 'time)
+    (setq org-log-into-drawer t))
 #+end_src
 *** org-mode packages
 #+begin_src emacs-lisp
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 #+end_src
 ** org-babel
 #+begin_src emacs-lisp
-;; org-babel activate languages
-(org-babel-do-load-languages            ;; supported languages ("https://orgmode.org/worg/org-contrib/babel/languages/index.html#configure")
-  'org-babel-load-languages
-  '((emacs-lisp . t)
-    (python . t)))
+  ;; org-babel activate languages
+  (org-babel-do-load-languages            ;; supported languages ("https://orgmode.org/worg/org-contrib/babel/languages/index.html#configure")
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)))
 
-(setq org-confirm-babel-evaluate nil)   ;; avoid emacs asking for yes or no questions
+  (setq org-confirm-babel-evaluate nil)   ;; avoid emacs asking for yes or no questions
 
-(require 'org-tempo)                    ;; (usage (<el for inserting emacs-lisp template))
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (require 'org-tempo)                    ;; (usage (<el for inserting emacs-lisp template))
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
 #+end_src
 ** org-roam
 #+begin_src emacs-lisp
-(use-package org-roam
-  :ensure t
-  :init
-  (setq org-roam-v2-ack t)
-  :custom
-  (org-roam-directory "~/Notes/org-roam-notes")
-  (org-roam-completion-everywhere t)
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert)
-         :map org-mode-map
-         ("C-M-i"    . completion-at-point))
-  :config
-  (org-roam-setup))
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/Notes/org-roam-notes")
+    (org-roam-completion-everywhere t)
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i"    . completion-at-point))
+    :config
+    (org-roam-setup))
 
-(setq find-file-visit-truename t)                   ;; force emacs to always resolve symlinks (performace cost)
+  (setq find-file-visit-truename t)                   ;; force emacs to always resolve symlinks (performace cost)
 
-;; over-ride the behaviour of org-roam note search to be case-insensitive
-(defun case-insensitive-org-roam-node-read (orig-fn &rest args)
-  (let ((completion-ignore-case t))
-    (apply orig-fn args)))
+  ;; over-ride the behaviour of org-roam note search to be case-insensitive
+  (defun case-insensitive-org-roam-node-read (orig-fn &rest args)
+    (let ((completion-ignore-case t))
+      (apply orig-fn args)))
 
-(advice-add 'org-roam-node-read :around #'case-insensitive-org-roam-node-read)
+  (advice-add 'org-roam-node-read :around #'case-insensitive-org-roam-node-read)
 
-;; enable database autosync
-(org-roam-db-autosync-mode 1)
+  ;; enable database autosync
+  (org-roam-db-autosync-mode 1)
 #+end_src
 ** Automatically tangle when this file is saved
 #+begin_src emacs-lisp
-;; Automatically tangle our Emacs.org config file when we save it
-(defun org-babel-tangle-config ()
-  (when (string-equal (buffer-file-name)
-                      (expand-file-name "~/.emacs.d/init.org"))
-    ;; Dynamic scoping to the rescue
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
+  ;; Automatically tangle our Emacs.org config file when we save it
+  (defun org-babel-tangle-config ()
+    (when (string-equal (buffer-file-name)
+                        (expand-file-name "~/.emacs.d/init.org"))
+      ;; Dynamic scoping to the rescue
+      (let ((org-confirm-babel-evaluate nil))
+        (org-babel-tangle))))
 
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
 #+end_src
 
 * External Packages
 ** Async mode
 #+begin_src emacs-lisp
-(use-package async
-  :ensure t
-  :init (dired-async-mode 1))
+  (use-package async
+    :ensure t
+    :init (dired-async-mode 1))
 #+end_src
 
 ** Which-key (for self-documented suggestions)
 #+begin_src emacs-lisp
-(use-package which-key
-  :ensure t
-  :config
+  (use-package which-key
+    :ensure t
+    :config
     (which-key-mode))
 #+end_src
 ** multiple-cursors
 #+begin_src emacs-lisp
-(require 'multiple-cursors)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->")         'mc/mark-next-like-this)
-(global-set-key (kbd "C-<")         'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<")     'mc/mark-all-like-this)
-(global-set-key (kbd "C-\"")        'mc/skip-to-next-like-this)
-(global-set-key (kbd "C-:")         'mc/skip-to-previous-like-this)
+  (require 'multiple-cursors)
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->")         'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<")         'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<")     'mc/mark-all-like-this)
+  (global-set-key (kbd "C-\"")        'mc/skip-to-next-like-this)
+  (global-set-key (kbd "C-:")         'mc/skip-to-previous-like-this)
 #+end_src
 ** company (auto-completions)
 #+begin_src emacs-lisp
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
+  ;; (require 'company)
+  ;; (add-hook 'after-init-hook 'global-company-mode)
 #+end_src
 ** move-text
 #+begin_src emacs-lisp
-(require 'move-text)
-(global-set-key (kbd "M-p") 'move-text-up)
-(global-set-key (kbd "M-n") 'move-text-down)
+  (require 'move-text)
+  (global-set-key (kbd "M-p") 'move-text-up)
+  (global-set-key (kbd "M-n") 'move-text-down)
 #+end_src
 ** IDE Features
 #+begin_src emacs-lisp
-;; tree-sitter configuration
-(require 'tree-sitter)
-(require 'tree-sitter-langs)
-(global-tree-sitter-mode)
+  ;; tree-sitter configuration
+  (require 'tree-sitter)
+  (require 'tree-sitter-langs)
+  (global-tree-sitter-mode)
 #+end_src
 * Encryption
 #+begin_src emacs-lisp
-;; automatic encryption and decryption for gpg encrypted files
-(require 'epa-file)
-(epa-file-enable)
+  ;; automatic encryption and decryption for gpg encrypted files
+  (require 'epa-file)
+  (epa-file-enable)
 
-;; allowing for password prompt in minibuffer
-(setq epa-pinentry-mode 'loopback)
+  ;; allowing for password prompt in minibuffer
+  (setq epa-pinentry-mode 'loopback)
 #+end_src
 
 * WSL specific setup
@@ -313,13 +342,13 @@
               search-web-default-browser 'browse-url-generic)))
     ;; run-cmd from within EMACS
     (defun run-cmdexe ()
-        (interactive)
-        (let ((shell-file-name "cmd.exe"))
-          (shell "*cmd.exe*")))
+      (interactive)
+      (let ((shell-file-name "cmd.exe"))
+        (shell "*cmd.exe*")))
 
     ;; use windows clipboard
     (defun copy-selected-text (start end)
-    (interactive "r")
+      (interactive "r")
       (if (use-region-p)
           (let ((text (buffer-substring-no-properties start end)))
             (shell-command (concat "echo '" text "' | clip.exe"))))))
@@ -327,50 +356,50 @@
 
 * Reducing RSI
 #+begin_src emacs-lisp
-(repeat-mode 1)                         ;; to disable use C-g whenever active (use M-x: describe-repeat-maps to get a complete list of commands that are activated in repeat-mode)
+  (repeat-mode 1)                         ;; to disable use C-g whenever active (use M-x: describe-repeat-maps to get a complete list of commands that are activated in repeat-mode)
 
-;; Start God-Mode from M-x when needed
-(setq god-mode-enable-function-key-translation nil)
-(require 'god-mode)
+  ;; Start God-Mode from M-x when needed
+  (setq god-mode-enable-function-key-translation nil)
+  (require 'god-mode)
 
-(global-set-key (kbd "C-.") #'god-mode-all) ;; enable / disable god-mode in a buffer
+  (global-set-key (kbd "C-.") #'god-mode-all) ;; enable / disable god-mode in a buffer
 
-(defun my-god-mode-toggle-on-overwrite () ;; behaviour when in overwrite mode
-  "Toggle god-mode on overwrite-mode."
-  (if (bound-and-true-p overwrite-mode)
-      (god-local-mode-pause)
-    (god-local-mode-resume)))
+  (defun my-god-mode-toggle-on-overwrite () ;; behaviour when in overwrite mode
+    "Toggle god-mode on overwrite-mode."
+    (if (bound-and-true-p overwrite-mode)
+        (god-local-mode-pause)
+      (god-local-mode-resume)))
 
-(add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
+  (add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
 
-(require 'god-mode-isearch)             ;; god-mode intergration with i-search
-(define-key isearch-mode-map (kbd "C-.") #'god-mode-isearch-activate)
-(define-key god-mode-isearch-map (kbd "C-.") #'god-mode-isearch-disable)
-(defun my-god-mode-self-insert ()
-  (interactive)
-  (if (and (bolp)
-           (eq major-mode 'org-mode))
-      (call-interactively 'org-self-insert-command)
-    (call-interactively 'god-mode-self-insert)))
+  (require 'god-mode-isearch)             ;; god-mode intergration with i-search
+  (define-key isearch-mode-map (kbd "C-.") #'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "C-.") #'god-mode-isearch-disable)
+  (defun my-god-mode-self-insert ()
+    (interactive)
+    (if (and (bolp)
+             (eq major-mode 'org-mode))
+        (call-interactively 'org-self-insert-command)
+      (call-interactively 'god-mode-self-insert)))
 
-(define-key god-local-mode-map [remap self-insert-command] #'my-god-mode-self-insert)
+  (define-key god-local-mode-map [remap self-insert-command] #'my-god-mode-self-insert)
 
-(define-key god-local-mode-map (kbd ".") #'repeat) ;; vim like dot repeating command
-(define-key god-local-mode-map (kbd "i") #'god-local-mode) ;; insert into god-mode in the local buffer
+  (define-key god-local-mode-map (kbd ".") #'repeat) ;; vim like dot repeating command
+  (define-key god-local-mode-map (kbd "i") #'god-local-mode) ;; insert into god-mode in the local buffer
 
-(global-set-key (kbd "C-x C-1") #'delete-other-windows) ;; navigations are easier with the current and following keybindings
-(global-set-key (kbd "C-x C-2") #'split-window-below)
-(global-set-key (kbd "C-x C-3") #'split-window-right)
-(global-set-key (kbd "C-x C-0") #'delete-window)
+  (global-set-key (kbd "C-x C-1") #'delete-other-windows) ;; navigations are easier with the current and following keybindings
+  (global-set-key (kbd "C-x C-2") #'split-window-below)
+  (global-set-key (kbd "C-x C-3") #'split-window-right)
+  (global-set-key (kbd "C-x C-0") #'delete-window)
 
-(define-key god-local-mode-map (kbd "[") #'backward-paragraph) ;; for easier paragraph navigation
-(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+  (define-key god-local-mode-map (kbd "[") #'backward-paragraph) ;; for easier paragraph navigation
+  (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
 
-(add-to-list 'god-exempt-major-modes 'dired-mode) ;; exempt god-mode in dired-mode
-(add-to-list 'god-exempt-major-modes 'compilation-mode) ;; exempt god-mode in compilation mode
+  (add-to-list 'god-exempt-major-modes 'dired-mode) ;; exempt god-mode in dired-mode
+  (add-to-list 'god-exempt-major-modes 'compilation-mode) ;; exempt god-mode in compilation mode
 
-(defun my-god-mode-update-cursor-type () ;; visual indication when entering god-mode
-  (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+  ;; (defun my-god-mode-update-cursor-type () ;; visual indication when entering god-mode
+  ;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
 
-(add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+  ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 #+end_src
