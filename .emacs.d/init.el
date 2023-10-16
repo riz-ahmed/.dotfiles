@@ -233,9 +233,9 @@
   (use-package all-the-icons)
   (unless installed (all-the-icons-install-fonts)))
 
-(use-package all-the-icons-dired
-  :after all-the-icons
-  :hook (dired-mode . all-the-icons-dired-mode))
+;; (use-package all-the-icons-dired
+;;   :after all-the-icons
+;;   :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; dired - list directories first
 (setq dired-listing-switches "-agho --group-directories-first"
