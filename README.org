@@ -14,7 +14,7 @@
 - zathura-pdf-mupdf
 - zsh (shell)
 
-* Installs
+* Terminal Driven Workflow
 - I am primarily using Emacs as my daily driver for all of my development, notetaking and various other tasks
 - Was earlier using VIM and/ Neovim on Tmux multiplexer as main development environment
   - VIM and Neovim are no more maintained
