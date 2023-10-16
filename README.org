@@ -25,10 +25,7 @@
 #+end_src
 
 * Create symlinks
-- I am using stow to manage dotfiles locally
-  #+begin_src shell
-    stow .                          # after cloning the repo
-  #+end_src
+- I am using stow to manage my dotfiles locally =stow .=
 
 * Emacs packages
 - Emacs packages needs to be installed manually using =M-x: install-packages=
