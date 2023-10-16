@@ -14,12 +14,6 @@
   (setq use-package-always-ensure t)
 #+end_src
 
-* Username and Email
-#+begin_src emacs-lisp
-(setq user-full-name "rizwan ahmed afzal")
-(setq user-mail-address "rizwan@synopsys.com")
-#+end_src
-
 * Basic Configuration
 #+begin_src emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)           ;; ask y or n instead of yes or no
