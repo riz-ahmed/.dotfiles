@@ -16,8 +16,7 @@
 
 * Terminal Driven Workflow
 - I am primarily using Emacs as my daily driver for all of my development, notetaking and various other tasks
-- Was earlier using VIM and/ Neovim on Tmux multiplexer as main development environment
-  - VIM and Neovim are no more maintained
+- VIM / Neovim is almost never used and no effort is taken really to maintain them
 
 * Quick Start
 #+begin_src shell
@@ -26,6 +25,3 @@
 
 * Create symlinks
 - I am using stow to manage my dotfiles locally =stow .=
-
-* Emacs packages
-- Emacs packages needs to be installed manually using =M-x: install-packages=
