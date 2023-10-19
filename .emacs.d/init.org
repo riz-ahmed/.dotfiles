@@ -447,11 +447,17 @@
   ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 #+end_src
 
-* Native CMD lauch if running windows
+* Native Windows Related Configuration
 #+begin_src emacs-lisp
   (when (eq system-type 'windows-nt)
-    (defun start-cmdexe ()
+    (defun start-cmdexe ()                ;; launch a new instance of cmd.exe
       (interactive)
       (let ((proc (start-process "cmd" nil "cmd.exe" "/C" "start" "cmd.exe")))
-        (set-process-query-on-exit-flag proc nil))))
+        (set-process-query-on-exit-flag proc nil)))
+
+    (defun my-comint-init ()              ;; prevent auto echo of commands sent to cmdexe
+      (setq comint-process-echoes t))
+    (add-hook 'comint-mode-hook 'my-comint-init)
+
+    (setenv "PATH" "C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/Common7/Tools/VsDevCmd.bat") ;; set MSVC path inside EMACS (for M-x: compile command))
 #+end_src
