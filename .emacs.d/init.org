@@ -350,6 +350,7 @@
     (global-set-key (kbd "M-n") 'move-text-down))
 #+end_src
 ** IDE Features
+*** Treesitter
 #+begin_src emacs-lisp
   ;; tree-sitter configuration
   (use-package tree-sitter
@@ -358,6 +359,31 @@
     :ensure t
     :config
     (global-tree-sitter-mode))
+#+end_src
+***  Projectile
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :custom ((projectile-completion-system 'ivy))
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    ;; NOTE: Set this to the folder where you keep your Git repos!
+    (when (file-directory-p "~/Gitlab")
+      (setq projectile-project-search-path '("~/Gitlab")))
+    (setq projectile-switch-project-action #'projectile-dired))
+
+  (use-package counsel-projectile
+    :config (counsel-projectile-mode))
+#+end_src
+*** Version Control
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 #+end_src
 * Encryption
 #+begin_src emacs-lisp
