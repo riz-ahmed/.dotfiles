@@ -459,5 +459,5 @@
       (setq comint-process-echoes t))
     (add-hook 'comint-mode-hook 'my-comint-init)
 
-    (setenv "PATH" "C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/Common7/Tools/VsDevCmd.bat") ;; set MSVC path inside EMACS (for M-x: compile command))
+    (setenv "PATH" "C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/Common7/Tools/VsDevCmd.bat")) ;; set MSVC path inside EMACS (for M-x: compile command))
 #+end_src
