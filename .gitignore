@@ -12,3 +12,10 @@
 *\.config/user-dirs.dirs
 *\.config/user-dirs.locale
 .config/.gsd-keyboard.settings-ported
+.emacs.d/auto-save-list/
+.emacs.d/eln-cache/
+.emacs.d/elpa/
+.emacs.d/ido.last
+.emacs.d/init.el
+.emacs.d/org-roam.db
+.emacs.d/places
