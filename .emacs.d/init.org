@@ -18,15 +18,27 @@
 #+end_src
 
 * Basic Configuration
+** Startup Settings
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold (* 50 1000 1000)) ;; increasing garbage collection thresold for faster startup times
+#+end_src
+
+** Some Helpful Settings
 #+begin_src emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)           ;; ask y or n instead of yes or no
   (defalias 'list-buffers 'ibuffer)       ;; improved version of listing iBuffers
   (setq echo-keystrokes 0.1)              ;; show keystrokes in minibuffer instantly
   (global-subword-mode 1)                 ;; camelCase string wills be treated as separate words
-  (setq gc-cons-threshold (* 50 1000 1000)) ;; increasing garbage collection thresold for faster startup times
+
   (add-hook 'before-save-hook 'whitespace-cleanup)
   (add-hook 'before-save-hook (lambda() (delete-trailing-whitespace))) ;; remove whitespaces while saving
 
+  ;; auto-delete hightlighted text
+  (delete-selection-mode 1)
+#+end_src
+
+** non GUI
+#+begin_src emacs-lisp
   ;; inhibit the startup screen
   (setq inhibit-startup-screen t)
 
@@ -38,31 +50,8 @@
   (set-fringe-mode -1)
   (show-paren-mode 1)
   (setq visible-bell t)
-
-  (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up
-  (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v"))   ;; scroll down
-
-  ;; line numbers
-  (column-number-mode)
-  (global-display-line-numbers-mode t)
-  (setq display-line-numbers-type 'relative)
-
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized)) ;; start emacs in fullscreen
-  (electric-pair-mode 1)                                         ;; enable autopairs by default
-
-  (setq use-dialog-box nil)               ;; diasable UI pop-up to keep fully keyboard driven
-
-  ;; will display the funtion def in the menu bar (ide like feature)
-  (add-hook 'my-mode-hook 'imenu-add-menubar-index)
-  (global-set-key (kbd "C-S-f") 'imenu)
-
-  ;; auto-delete hightlighted text
-  (delete-selection-mode 1)
-
-  (setq-default indent-tabs-mode nil)     ;; use spaces instead of tabs
-
-  '(tab-stop-list '(4 9 14 19 24 29 34 39 44 49 54 59 64 69 74 79))
-
+    (setq use-dialog-box nil)               ;; diasable UI pop-up to keep fully keyboard driven
+    ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized)) ;; start emacs in fullscreen
 #+end_src
 
 * Minibuffer
@@ -100,15 +89,16 @@
     :hook (dired-mode . all-the-icons-dired-mode))
 
   ;; dired - list directories first
-  (setq dired-listing-switches "-agho --group-directories-first"
-        dired-omit-files "^\\.[^.].*"
+
+  (setq dired-omit-files "^\\.[^.].*"
         dired-omit-verbose nil
         dired-hide-details-hide-symlink-targets nil
         delete-by-moving-to-trash t)
 
+  (when (or (eq system-type 'gnu/linux) (eq system-type 'windows-nt))
+    (setq dired-listing-switches "-agho --group-directories-first"))
+
   (autoload 'dired-omit-mode "dired-x")   ;; dired-x has some additonal features
-
-
 #+end_src
 
 * Set Locale
@@ -123,10 +113,34 @@
 
 * Fonts
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka" :height 110)
+  (when (eq system-type 'darwin)
+    (set-face-attribute 'default nil :height 150))
+
+  (when (or (eq system-type 'windows-nt) (eq system-type 'gnu/linux))
+    (set-face-attribute 'default nil :font "Iosevka" :height 110))
 #+end_src
 
 * Progaramming
+** General settings
+#+begin_src emacs-lisp
+  ;; line numbers
+  (column-number-mode)
+  (global-display-line-numbers-mode t)
+  (setq display-line-numbers-type 'relative)
+
+  (electric-pair-mode 1)                                         ;; enable autopairs by default
+
+  ;; will display the funtion def in the menu bar (ide like feature)
+  (add-hook 'my-mode-hook 'imenu-add-menubar-index)
+  (global-set-key (kbd "C-S-f") 'imenu)
+
+
+  (setq-default indent-tabs-mode nil)     ;; use spaces instead of tabs
+
+  ;; '(tab-stop-list '(4 9 14 19 24 29 34 39 44 49 54 59 64 69 74 79))
+
+#+end_src
+** C-Programming
 #+begin_src emacs-lisp
   ;; c-style comments
   (setq-default c-basic-offset 4
@@ -137,6 +151,26 @@
                            (c-toggle-comment-style -1)))
 #+end_src
 
+** Markdown
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :mode "\\.md\\'"
+    :config
+    (setq markdown-command "marked")
+    (defun  set-markdown-header-font-sizes ()
+      (dolist (face '((markdown-header-face-1 . 1.2)
+                      (markdown-header-face-2 . 1.1)
+                      (markdown-header-face-3 . 1.0)
+                      (markdown-header-face-4 . 1.0)
+                      (markdown-header-face-5 . 1.0)))
+        (set-face-attribute (car face) nil :weight 'normal :height (cdr face))))
+    (defun mardown-mode-hook ()
+      (set-markdown-header-font-sizes))
+
+    (add-hook 'markdown-mode-hook 'markdown-mode-hook))
+#+end_src
+
 * Unbind nuisance keybindings
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-x C-z") nil)    ;; disable (supend-frame) command. Very annoying at times
@@ -145,64 +179,11 @@
 
 * Theme
 #+begin_src emacs-lisp
-    ;; for GNU/Guix
-    (when (eq system-type 'gnu/linux)
-      ;; customize modus theme
-      (setq modus-themes-mode-line '(borderless))
-      (setq modus-themes-region '(bg-only no-extend)) ;; highlighting text
-      (setq modus-themes-bold-constructs t)           ;; bolded text whenever possible
-      (setq modus-themes-italic-constructs t)           ;; italic text whenever possible
-      (setq modus-themes-paren-match '(bold intense underline))           ;; matching parens
-      ;; (setq modus-themes-syntax '(faint))           ;;
-      ;; (setq modus-themes-syntax '(alt-syntax))           ;;
-      (setq modus-themes-syntax '(faint green-strings yellow-comments))           ;;
-
-      ;; modus theme customisations for org-mode
-      (setq modus-themes-headings
-            '((1. (rainbow overline background 1.4))
-              (2. (rainbow background 1.3))
-              (3. (rainbow bold 1.2))
-              (t. (semilight 1.1))))
-
-      (setq modus-themes-scale-headings t)     ;; important when modus theme is customised
-
-      (setq modus-themes-org-blocks 'gray-background)
-
-      (load-theme 'modus-vivendi t))
-
-
-    ;; for WSL
-    (when (and (eq system-type 'gnu/linux)
-               (getenv "WSLENV"))
-      (load-theme 'doom-palenight t))
-
-    ;; for window-nt
-    (when (eq system-type 'windows-nt)
-            ;; customize modus theme
-      (setq modus-themes-mode-line '(borderless))
-      (setq modus-themes-region '(bg-only no-extend)) ;; highlighting text
-      (setq modus-themes-bold-constructs t)           ;; bolded text whenever possible
-      (setq modus-themes-italic-constructs t)           ;; italic text whenever possible
-      (setq modus-themes-paren-match '(intense underline))           ;; matching parens
-      (setq modus-themes-syntax '(green-strings yellow-comments))           ;;
-
-      ;; modus theme customisations for org-mode
-      (setq modus-themes-headings
-            '((1. (rainbow overline background 1.4))
-              (2. (rainbow background 1.3))
-              (3. (rainbow bold 1.2))
-              (t. (semilight 1.1))))
-
-      (setq modus-themes-scale-headings t)     ;; important when modus theme is customised
-
-      (setq modus-themes-org-blocks 'gray-background)
-
-      (load-theme 'modus-vivendi t))
+(load-theme 'doom-zenburn t)
 #+end_src
 
 * Scrolling
 #+begin_src emacs-lisp
-
   (setq scroll-preserve-screen-position t) ;; preserve scrolling position
 
   ;; Smooth Vertical Scroll
@@ -218,6 +199,9 @@
 
   (save-place-mode 1)                     ;; restore last cursor location
 
+  (when (or (eq system-type 'gnu/linux) (eq system-type 'windows-nt))
+    (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up with point
+    (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v")))   ;; scroll down with point
 #+end_src
 
 * Org-mode
