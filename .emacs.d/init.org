@@ -99,6 +99,10 @@
     (setq dired-listing-switches "-agho --group-directories-first"))
 
   (autoload 'dired-omit-mode "dired-x")   ;; dired-x has some additonal features
+
+  (global-set-key (kbd "C-x C-d") 'dired) ;; easy on fingures to type this way
+  (global-set-key (kbd "C-x d") 'list-directory)
+
 #+end_src
 
 * Set Locale
@@ -118,6 +122,11 @@
 
   (when (or (eq system-type 'windows-nt) (eq system-type 'gnu/linux))
     (set-face-attribute 'default nil :font "Iosevka" :height 110))
+#+end_src
+
+* Transparency
+#+begin_src emacs-lisp
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 #+end_src
 
 * Progaramming
@@ -414,7 +423,7 @@
   (setq god-mode-enable-function-key-translation nil)
   (require 'god-mode)
 
-  (global-set-key (kbd "C-.") #'god-mode-all) ;; enable / disable god-mode in a buffer
+  (global-set-key (kbd "<escape>") #'god-mode-all) ;; enable / disable god-mode in a buffer
 
   (defun my-god-mode-toggle-on-overwrite () ;; behaviour when in overwrite mode
     "Toggle god-mode on overwrite-mode."
@@ -425,8 +434,8 @@
   (add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
 
   (require 'god-mode-isearch)             ;; god-mode intergration with i-search
-  (define-key isearch-mode-map (kbd "C-.") #'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "C-.") #'god-mode-isearch-disable)
+  (define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
   (defun my-god-mode-self-insert ()
     (interactive)
     (if (and (bolp)
@@ -449,12 +458,12 @@
 
   (add-to-list 'god-exempt-major-modes 'dired-mode) ;; exempt god-mode in dired-mode
   (add-to-list 'god-exempt-major-modes 'compilation-mode) ;; exempt god-mode in compilation mode
-  (custom-set-faces
-   '(god-mode-lighter ((t (:inherit error)))))
-  ;; (defun my-god-mode-update-cursor-type () ;; visual indication when entering god-mode
-  ;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+  ;; (custom-set-faces
+  ;;  '(god-mode-lighter ((t (:inherit error)))))
+  (defun my-god-mode-update-cursor-type () ;; visual indication when entering god-mode
+    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
 
-  ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+  (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 #+end_src
 
 * Native Windows Related Configuration
