@@ -49,3 +49,5 @@ autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
 # enabling zoxide
 eval "$(zoxide init zsh)"
 
+
+if [ -e /home/riz/.nix-profile/etc/profile.d/nix.sh ]; then . /home/riz/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
