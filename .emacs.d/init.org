@@ -432,11 +432,13 @@
 * Reducing RSI
 ** keybindings
 #+begin_src emacs-lisp
-  (use-package objed
-    :ensure t)
-  (objed-mode)
+  ;; (use-package objed
+  ;;   :ensure t)
+  ;; (objed-mode)
 
   (use-package devil
     :ensure t)
   (global-devil-mode)
+  (global-set-key (kbd "C-.") 'global-devil-mode)
+  (devil-set-key (kbd "."))
 #+end_src
