@@ -196,14 +196,14 @@
 
 * Theme
 #+begin_src emacs-lisp
-(load-theme 'doom-zenburn t)
+  (load-theme 'doom-zenburn t)
 #+end_src
 
 ** Transparency
 #+begin_src emacs-lisp
-(set-frame-parameter nil 'alpha-background 70)
+  (set-frame-parameter nil 'alpha-background 70)
 
-(add-to-list 'default-frame-alist '(alpha-background . 70))
+  (add-to-list 'default-frame-alist '(alpha-background . 70))
 #+end_src
 
 * Scrolling
@@ -299,7 +299,8 @@
     (let ((completion-ignore-case t))
       (apply orig-fn args)))
 
-  (advice-add 'org-roam-node-read :around #'case-insensitive-org-roam-node-read)
+  (advice-add 'org-roam-node-read :around
+   #'case-insensitive-org-roam-node-read)
 
   ;; enable database autosync
   (org-roam-db-autosync-mode 1)
@@ -314,7 +315,8 @@
       (let ((org-confirm-babel-evaluate nil))
         (org-babel-tangle))))
 
-  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook
+   #'org-babel-tangle-config)))
 #+end_src
 
 * External Packages
@@ -383,6 +385,12 @@
       (setq projectile-project-search-path '("~/Gitlab")))
     (setq projectile-switch-project-action #'projectile-dired))
 #+end_src
+** aggressive-indent-mode
+#+begin_src emacs-lisp
+  (use-package aggressive-indent
+    :ensure t)
+  (aggressive-indent-mode)
+#+end_src
 
 * Encryption
 #+begin_src emacs-lisp
@@ -422,56 +430,13 @@
 #+end_src
 
 * Reducing RSI
+** keybindings
 #+begin_src emacs-lisp
-  (repeat-mode 1)                         ;; to disable use C-g whenever active (use M-x: describe-repeat-maps to get a complete list of commands that are activated in repeat-mode)
+  (use-package objed
+    :ensure t)
+  (objed-mode)
 
-  ;; Start God-Mode from M-x when needed
-  (setq god-mode-enable-function-key-translation nil)
-  (require 'god-mode)
-
-  (global-set-key (kbd "<escape>") #'god-mode-all) ;; enable / disable god-mode in a buffer
-
-  (defun my-god-mode-toggle-on-overwrite () ;; behaviour when in overwrite mode
-    "Toggle god-mode on overwrite-mode."
-    (if (bound-and-true-p overwrite-mode)
-        (god-local-mode-pause)
-      (god-local-mode-resume)))
-
-  (add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
-
-  (require 'god-mode-isearch)             ;; god-mode intergration with i-search
-  (define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
-  (defun my-god-mode-self-insert ()
-    (interactive)
-    (if (and (bolp)
-             (eq major-mode 'org-mode))
-        (call-interactively 'org-self-insert-command)
-      (call-interactively 'god-mode-self-insert)))
-
-  (define-key god-local-mode-map [remap self-insert-command] #'my-god-mode-self-insert)
-
-  (define-key god-local-mode-map (kbd ".") #'repeat) ;; vim like dot repeating command
-  (define-key god-local-mode-map (kbd "i") #'god-local-mode) ;; insert into god-mode in the local buffer
-
-  (global-set-key (kbd "C-x C-1") #'delete-other-windows) ;; navigations are easier with the current and following keybindings
-  (global-set-key (kbd "C-x C-2") #'split-window-below)
-  (global-set-key (kbd "C-x C-3") #'split-window-right)
-  (global-set-key (kbd "C-x C-0") #'delete-window)
-
-  (define-key god-local-mode-map (kbd "[") #'backward-paragraph) ;; for easier paragraph navigation
-  (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
-
-  (add-to-list 'god-exempt-major-modes 'dired-mode) ;; exempt god-mode in dired-mode
-  (add-to-list 'god-exempt-major-modes 'compilation-mode) ;; exempt god-mode in compilation mode
-
-  (when (eq system-type 'gnu/linux)
-    (custom-set-faces
-     '(god-mode-lighter ((t (:inherit error))))))
-
-  (when (eq system-type 'darwin)
-  (defun my-god-mode-update-cursor-type () ;; visual indication when entering god-mode
-    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-
-  (add-hook 'post-command-hook #'my-god-mode-update-cursor-type))
+  (use-package devil
+    :ensure t)
+  (global-devil-mode)
 #+end_src
