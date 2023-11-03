@@ -25,3 +25,11 @@
 
 * Create symlinks
 - I am using stow to manage my dotfiles locally =stow .=
+
+* Start kmonad service
+- Copy =kmonad.service= to =/usr/lib/systemd/system=
+- Enable it as a systemd service
+#+begin_src shell
+  sudo systemctl daemon-reload
+  systemctl enable --now kmonad.service
+#+end_src
