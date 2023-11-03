@@ -31,7 +31,7 @@
 lmt (tap-hold-next-release 250 , lmet)
 lat (tap-hold-next-release 250 k lalt)
 lcl (tap-hold-next-release 250 j lctl)
-;; lst (tap-hold-next-release 250 t lsft)
+fcl (tap-hold-next-release 250 f lctl)
 ;; rst (tap-hold-next-release 250 n rsft)
 ;; rcl (tap-hold-next-release 250 e rctl)
 ;; rat (tap-hold-next-release 250 i lalt)
@@ -43,9 +43,8 @@ ecl (tap-hold-next-release 250 esc lctl)
 (deflayer default
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab  q    w    e    r    t    y    u    i    o    p    [    ]
-  @ecl a    s    d    f    g    h    @lcl    @lat    l    ;    '    \    ret
+  @ecl a    s    d    @fcl    g    h    @lcl    @lat    l    ;    '    \    ret
   lsft @gcl    z    x    c    v    b    n    m    ,    .    /    rsft
-
 )
 
 ;; (deflayer func1
