@@ -27,7 +27,7 @@ export BROWSER="$(which qutebrowser)"
 export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"   # colorise man pages
 
-# load aliases 
+# load aliases
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
 
 # mail settings
@@ -47,7 +47,4 @@ autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
 
 # # plugins
 # enabling zoxide
-eval "$(zoxide init zsh)"
-
-
-if [ -e /home/riz/.nix-profile/etc/profile.d/nix.sh ]; then . /home/riz/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+# eval "$(zoxide init zsh)"

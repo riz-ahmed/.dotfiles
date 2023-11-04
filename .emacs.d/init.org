@@ -1,4 +1,4 @@
-#+title Emacs Configuration
+ #+title Emacs Configuration
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 
 * Initialise packages
@@ -92,12 +92,6 @@
   (use-package all-the-icons-dired
     :after all-the-icons
     :hook (dired-mode . all-the-icons-dired-mode))
-#+end_src
-
-** easier keybindings
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-x C-d") 'dired) ;; easy on fingures to type this way
-  (global-set-key (kbd "C-x d") 'list-directory)
 #+end_src
 
 ** autosave and auto-revert buffers
@@ -196,7 +190,11 @@
 
 * Theme
 #+begin_src emacs-lisp
-  (load-theme 'doom-zenburn t)
+  (load-theme 'doom-zenburn t)            ;; main theme
+
+  (use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode)) ;; fancy and fast mode line for Emacs
 #+end_src
 
 ** Transparency
@@ -432,6 +430,6 @@
 * Reducing RSI
 ** keybindings
 #+begin_src emacs-lisp
-  ;; using kmonad to map f and j to lctl (ctrl)
+  ;; using kmonad to reamp space as an externded ctrl modifier
   ;; and k to M-
 #+end_src

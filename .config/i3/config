@@ -21,7 +21,7 @@ for_window [class="^.*"] border pixel 3
 # border colors for the focussed window
 #class			border	bg	text		indicator	child_border
 client.focused		#A7C080	#000000	#000000	#000000	#A7C080
-client.urgent		#E67E80 #E67E80 #2D353B #E67E80 #E67E80 
+client.urgent		#E67E80 #E67E80 #2D353B #E67E80 #E67E80
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -66,7 +66,8 @@ bindsym $mod+w exec firefox
 bindsym $mod+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+d exec --no-startup-id dmenu_run -fn 'Iosevka-15'
+
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -162,9 +163,9 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # mouse bindings
 # will kill the window on release
-bindsym --release button 2 kill 
+bindsym --release button 2 kill
 # holding mod plus left mouse to move around the window and mod + right click for risizing
-floating_modifier $mod 
+floating_modifier $mod
 # focus follow mouse
 focus_follows_mouse yes
 
