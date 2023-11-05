@@ -193,8 +193,8 @@
   (load-theme 'doom-zenburn t)            ;; main theme
 
   (use-package doom-modeline
-  :ensure t
-  :hook (after-init . doom-modeline-mode)) ;; fancy and fast mode line for Emacs
+    :ensure t
+    :init (doom-modeline-mode 1))
 #+end_src
 
 ** Transparency
