@@ -1,17 +1,3 @@
-.config/Thunar/*
-.config/dconf/*
-.config/caja/*
-.config/gdb/*
-.config/gnome-initial-setup-done
-.config/guix/*
-.config/ibus/*
-.config/nano/*
-.config/menus/*
-.config/pulse/*
-.config/xfce4
-.config/user-dirs.dirs
-.config/user-dirs.locale
-.config/.gsd-keyboard.settings-ported
 .emacs.d/auto-save-list/
 .emacs.d/eln-cache/
 .emacs.d/elpa/
