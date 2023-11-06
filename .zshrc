@@ -25,7 +25,7 @@ export EDITOR="$(which nvim)"
 export VISUAL="$(which nvim)"
 export BROWSER="$(which qutebrowser)"
 export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"   # colorise man pages
+viman () { text=$(man "$@") && echo "$text" | vim -R +":set ft=man" - ; }
 
 # load aliases
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
@@ -44,7 +44,3 @@ autoload -Uz run-help
 alias help=run-help
 
 autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo run-help-svk run-help-svn
-
-# # plugins
-# enabling zoxide
-# eval "$(zoxide init zsh)"

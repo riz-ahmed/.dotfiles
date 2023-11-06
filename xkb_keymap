@@ -1,5 +1,0 @@
-partial modifier_keys
-xkb_symbols "caps-escape" {
-        replace key <ESC> { [Caps_Lock] };
-        replace key <CAPS> { [Escape] };
-};
