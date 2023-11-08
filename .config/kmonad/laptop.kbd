@@ -23,10 +23,10 @@
 ;; fn2 (layer-toggle func2)
 
 lmt (tap-hold-next-release 250 l lmet)
-lat (tap-hold-next-release 250 k lalt)
+kat (tap-hold-next-release 150 k lalt)
 lcl (tap-hold-next-release 250 j lctl)
 fcl (tap-hold-next-release 250 f lctl)
-sst (tap-hold-next-release 250 space rctl)
+sst (tap-hold-next-release 150 space rctl)
 gcl (tap-hold-next-release 250 < lctl)
 ecl (tap-hold-next-release 250 esc lctl)
 )
@@ -34,7 +34,7 @@ ecl (tap-hold-next-release 250 esc lctl)
 (deflayer defualt
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab  q    w    e    r    t    y    u    i    o    p    [    ]
-  @ecl a    s    d    f    g    h    j    @lat    @lmt    ;    '    \    ret
+  @ecl a    s    d    f    g    h    j    @kat    @lmt    ;    '    \    ret
   lsft ,    z    x    c    v    b    n    m    ,    .    /    rsft
          lctl lmet  lalt           @sst            ralt prnt  rctl
 )
