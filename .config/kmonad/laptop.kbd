@@ -22,13 +22,13 @@
 ;; fn1 (layer-toggle func1)
 ;; fn2 (layer-toggle func2)
 
-lmt (tap-hold-next-release 250 l lmet)
+lmt (tap-hold-next-release 150 l lmet)
 kat (tap-hold-next-release 150 k lalt)
-lcl (tap-hold-next-release 250 j lctl)
-fcl (tap-hold-next-release 250 f lctl)
+lcl (tap-hold-next-release 150 j lctl)
+fcl (tap-hold-next-release 150 f lctl)
 sst (tap-hold-next-release 150 space rctl)
-gcl (tap-hold-next-release 250 < lctl)
-ecl (tap-hold-next-release 250 esc lctl)
+gcl (tap-hold-next-release 150 < lctl)
+ecl (tap-hold-next-release 150 esc lctl)
 )
 
 (deflayer defualt
