@@ -61,6 +61,86 @@
   (setq dired-recursive-deletes 'always)                     ;; don't ask confimation questions
 #+end_src
 
+* Reducing RSI
+** keybindings
+#+begin_src emacs-lisp
+  ;; using kmonad to reamp space as an externded ctrl modifier
+  ;; and k to Meta when presss and held
+
+  ;; just press C-z to deactivate evil mode and get back to Emacs defaults (no worries)
+
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  (global-set-key (kbd "C-M-u") 'universal-argument)
+  (defun evil-hook ()
+    (dolist (mode '(custom-mode
+                    eshell-mode
+                    git-rebase-mode
+                    erc-mode
+                    term-mode))
+      (add-to-list 'evil-emacs-state-modes mode)))
+
+  (use-package undo-tree
+    :init
+    (global-undo-tree-mode 1)
+
+    (use-package evil
+      :ensure nil
+      :init
+      (setq evil-want-integration t)
+      (setq evil-want-keybinding nil)
+      (setq evil-want-C-u-scroll t)
+      (setq evil-want-C-i-jump nil)
+      (setq evil-respect-visual-line-mode t)
+      (setq evil-undo-system 'undo-tree)
+      :config
+      (add-hook 'evil-mode-hook 'evil-hook)
+      (evil-mode 1)
+      (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+      ;; (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+      ;; Use visual line motions even outside of visual-line-mode buffers
+      (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+      (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
+    (use-package evil-collection
+      :ensure nil
+      :after evil
+      :init
+      (setq evil-collection-company-use-tng nil)  ;; Is this a bug in evil-collection?
+      :custom
+      (evil-collection-outline-bind-tab-p nil)
+      :config
+      (setq evil-collection-mode-list
+            (remove 'lispy evil-collection-mode-list))
+      (evil-collection-init)))
+
+  (use-package general
+    :config
+    (general-evil-setup t)
+
+    (general-create-definer leader-key-def
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "M-SPC"))
+
+  (leader-key-def
+    "x" '(:ignore t :wk "C-x prefix")
+    "g" '(keyboard-quit :wk "C-x prefix")
+    "xs" '(save-buffer  :wk "save-buffer")
+    "xe" '(eval-last-sexp  :wk "eval-last-sexp")
+    "x0" '(delete-window  :wk "delete-window")
+    "x1" '(delete-other-windows  :wk "delete-other-windows")
+    "x2" '(split-window-below  :wk "split-window-below")
+    "x3" '(split-window-right  :wk "split-window-right")
+    "xo" '(other-window  :wk "other-window")
+    "xx" '(execute-extended-command  :wk "execute-extended-command")
+    "xc" '(save-buffers-kill-terminal  :wk "save-buffer-kill-terminal")
+    "xb" '(ido-switch-buffer  :wk "ido-swwitch-buffer")
+    "xk" '(ido-kill-buffer  :wk "ido-kill-buffer")
+    "xf" '(ido-find-file  :wk "ido-find-file")
+    "xd" '(ido-dired  :wk "ido-dired")
+    "cnf" '(org-roam-node-find "org-roam-node-find")
+    "cni" '(org-roam-node-insert "org-roam-node-insert"))
+#+end_src
 * Minibuffer
 #+begin_src emacs-lisp
   ;; minibuffer completions
@@ -116,6 +196,27 @@
   (autoload 'dired-omit-mode "dired-x")   ;; dired-x has some additonal features
 #+end_src
 
+** Evil packages
+#+begin_src emacs-lisp
+  (use-package dired-single
+    :defer t)
+
+  (use-package dired-ranger
+    :defer t)
+
+  (use-package dired-collapse
+    :defer t)
+
+  (if (bound-and-true-p evil-mode)
+      (evil-collection-define-key 'normal 'dired-mode-map
+        "h" 'dired-single-up-directory
+        "H" 'dired-omit-mode
+        "l" 'dired-single-buffer
+        "y" 'dired-ranger-copy
+        "X" 'dired-ranger-move
+        "p" 'dired-ranger-paste))
+#+end_src
+
 * Set Locale
 #+begin_src emacs-lisp
   (set-language-environment 'utf-8)
@@ -147,6 +248,10 @@
 
 
   (setq-default indent-tabs-mode nil)     ;; use spaces instead of tabs
+
+  (setq-default tab-width 4)
+  (if (bound-and-true-p evil-mode)
+      (setq-default evil-shift-width tab-width))
 
   ;; '(tab-stop-list '(4 9 14 19 24 29 34 39 44 49 54 59 64 69 74 79))
 
@@ -237,8 +342,7 @@
         '(org-crypt
           org-habit
           org-bookmark
-          org-eshell
-          ))
+          org-eshell))
 
   (use-package org
     :hook (org-mode . org-mode-setup)
@@ -415,11 +519,4 @@
       (if (use-region-p)
           (let ((text (buffer-substring-no-properties start end)))
             (shell-command (concat "echo '" text "' | clip.exe"))))))
-#+end_src
-
-* Reducing RSI
-** keybindings
-#+begin_src emacs-lisp
-  ;; using kmonad to reamp space as an externded ctrl modifier
-  ;; and k to M-
 #+end_src
