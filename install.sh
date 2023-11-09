@@ -36,7 +36,6 @@ sudo systemctl enable sshd
 sudo systemctl enable dhcpcd
 sudo pacman -S bluez bluez-utils blueman
 sudo systemctl enable bluetooth
-sudo nvim /etc/pacman.conf
 sudo systemctl enable fstrim.timer
 sudo systemctl enable ntpd
 timedatectl set-ntp true
@@ -57,3 +56,5 @@ sudo pacman -S fd ripgrep bat lsd tree-sitter tree-sitter-cli
 sudo pacman -S maim
 sudo pacman -S codespell go luarocks ruby rubygems composer php nodejs npm yarn python python-pip jre-openjdk jdk-openjdk julia wget curl
 yay -S powershell-bin
+sudo pacman -S qrencode
+sudo pacman -S zbar

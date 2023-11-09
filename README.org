@@ -1,6 +1,6 @@
 * .dotfiles
 - Just my dotfiles with my personal preference on setting up Arch Linux with all the apps set up to my taste
-- Just copied stuff from here and there
+- Copied stuff from here and there
 
 * Requirements
 - Alacritty
