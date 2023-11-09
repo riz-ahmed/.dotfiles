@@ -33,6 +33,13 @@ viman () { text=$(man "$@") && echo "$text" | vim -R +":set ft=man" - ; }
 # mail settings
 set -o mailwarn
 
+# browsing through the current directory
+fcd(){cd $(ls | fzf)}
+
+# aliases
+alias cpy="xclip -selection -c" \
+      h="history | cut -c 8- | sort | uniq | fzf | tr '\\n' ' ' | cpy"  \
+
 # histroy control
 HISTCONTROL=ignorespace:ignoredups
 HISTFILESIZE=500
