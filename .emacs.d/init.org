@@ -2,7 +2,7 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ~/.emacs.d/init.el :mkdirp yes
 
 * Initialise packages
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (require 'package)
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -19,12 +19,12 @@
 
 * Basic Configuration
 ** Startup Settings
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (setq gc-cons-threshold (* 50 1000 1000)) ;; increasing garbage collection thresold for faster startup times
 #+end_src
 
 ** Some Helpful Settings
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)           ;; ask y or n instead of yes or no
   (defalias 'list-buffers 'ibuffer)       ;; improved version of listing iBuffers
   (setq echo-keystrokes 0.1)              ;; show keystrokes in minibuffer instantly
@@ -38,7 +38,7 @@
 #+end_src
 
 ** non GUI
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; inhibit the startup screen
   (setq inhibit-startup-screen t)
 
@@ -55,14 +55,14 @@
 #+end_src
 
 ** Display shell properly
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (add-hook 'shell-mode-hook 'ansi-color=for-comint-mode-on) ;; diaplay colored shell properly
   (setq dired-enable-globstar-in-shell t)                    ;; enable globbing in shell-mode
   (setq dired-recursive-deletes 'always)                     ;; don't ask confimation questions
 #+end_src
 
 * Minibuffer
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; minibuffer completions
   (setq ido-enable-flex-matching t)
   (setq ido-everywhere t)
@@ -71,7 +71,7 @@
 
 * Dired / File Management
 ** File backups
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; disable emacs to automatically save files
   (setq make-backup-files nil)
   (setq backup-inhibited t)
@@ -83,7 +83,7 @@
 #+end_src
 
 ** all the icons in dired
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; display icons in dired-mode
   (let ((installed (package-installed-p 'all-the-icons)))
     (use-package all-the-icons)
@@ -95,13 +95,13 @@
 #+end_src
 
 ** autosave and auto-revert buffers
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (global-auto-revert-mode 1)             ;; auto-revert changed files
   (setq global-auto-revert-non-file-buffers t) ;; auto-revert for non-file buffers
 #+end_src
 
 ** Dired display settings
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (setq dired-omit-files "^\\.[^.].*"
     dired-omit-verbose nil
     dired-hide-details-hide-symlink-targets nil
@@ -112,12 +112,12 @@
 #+end_src
 
 ** Dired-x for addtional features
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (autoload 'dired-omit-mode "dired-x")   ;; dired-x has some additonal features
 #+end_src
 
 * Set Locale
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (set-language-environment 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (setq locale-coding-system 'utf-8)
@@ -127,13 +127,13 @@
 #+end_src
 
 * Fonts
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (set-face-attribute 'default nil :font "Iosevka" :height 150)
 #+end_src
 
 * Progaramming
 ** General settings
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; line numbers
   (column-number-mode)
   (global-display-line-numbers-mode t)
@@ -154,7 +154,7 @@
 
 #+end_src
 ** C-Programming
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; c-style comments
   (setq-default c-basic-offset 4
         c-default-style '((java-mode . "java")
@@ -165,7 +165,7 @@
 #+end_src
 
 ** Markdown
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (use-package markdown-mode
     :ensure t
     :mode "\\.md\\'"
@@ -185,13 +185,13 @@
 #+end_src
 
 * Unbind nuisance keybindings
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (global-set-key (kbd "C-x C-z") nil)    ;; disable (supend-frame) command. Very annoying at times
   ;; (global-set-key (kbd "C-z") nil)        ;; (suspend-frame) also bound to this combination
 #+end_src
 
 * Theme
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (load-theme 'doom-palenight t)            ;; main theme
 #+end_src
 
@@ -203,7 +203,7 @@
 #+end_src
 
 * Scrolling
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (setq scroll-preserve-screen-position t) ;; preserve scrolling position
 
   ;; Smooth Vertical Scroll
@@ -226,7 +226,7 @@
 
 * Org-mode
 ** org-mode
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (defun org-mode-setup ()
     (org-indent-mode)
     (visual-line-mode 1))
@@ -254,7 +254,7 @@
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 #+end_src
 ** org-babel
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; org-babel activate languages
 (org-babel-do-load-languages
   'org-babel-load-languages
@@ -271,7 +271,7 @@
     (add-to-list 'org-structure-template-alist '("py" . "src python")))
 #+end_src
 ** org-roam
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (use-package org-roam
     :ensure t
     :init
@@ -301,7 +301,7 @@
   (org-roam-db-autosync-mode 1)
 #+end_src
 ** Automatically tangle when this file is saved
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; Automatically tangle our Emacs.org config file when we save it
   (defun org-babel-tangle-config ()
     (when (string-equal (buffer-file-name)
@@ -315,21 +315,21 @@
 
 * External Packages
 ** Async mode
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (use-package async
     :ensure t
     :init (dired-async-mode 1))
 #+end_src
 
 ** Which-key (for self-documented suggestions)
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (use-package which-key
     :ensure t
     :config
     (which-key-mode))
 #+end_src
 ** multiple-cursors
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (use-package multiple-cursors
     :ensure t
     :config
@@ -341,12 +341,12 @@
     (global-set-key (kbd "C-:")         'mc/skip-to-previous-like-this))
 #+end_src
 ** company (auto-completions)
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; (require 'company)
   ;; (add-hook 'after-init-hook 'global-company-mode)
 #+end_src
 ** move-text
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (use-package move-text
     :ensure t
     :config
@@ -355,13 +355,13 @@
 #+end_src
 ** IDE Features
 *** Magit
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (use-package magit
     :ensure t)
 #+end_src
 * Reducing RSI
 ** keybindings
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   ;; using kmonad to reamp space as an externded ctrl modifier
   ;; and k to Meta when presss and held
   (setq god-mode-enable-function-key-translation nil)
