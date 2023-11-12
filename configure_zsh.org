@@ -1,0 +1,12 @@
+#+title ZSH Configuration
+
+* Setting up the .zshevn
+This file should only contain users environment variables such as XDG variables, ZDOT variables etc
+#+begin_src bash-ts-mode :tangle ~/.zshenv :mkdirp yes
+#!/usr/bin/zsh
+#+end_src
+the variable =$ZDOTDIR= can be used to control where the .zsh configuration files are to be looked
+#+begin_src bash-ts-mode :tangle ~/.zshenv :mkdirp yes
+export XDG_CONFIG_HOME="$HOME/.config"
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+#+end_src
