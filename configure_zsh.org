@@ -33,8 +33,27 @@ bindkey '^Y' yank
 bindkey '^R' history-incremental-search-backward
 bindkey '^S' history-incremental-search-forward
 #+end_src
+** Start emacs daemon and open with emacs
+[source: emacs element, youtube]
+#+begin_src bash-ts
+  if ! pgrep -x "emacs" > /dev/null
+  then
+      emacs --daemon
+  else
+      echo "Emacs daemon is running!"
+  fi
 
-*** Use vim to view the manpages
+  function open-with-emacs-client {
+      emacsclient --no-wait --alternative-editor="" -c "$"
+  }
+  alias eo='open-with-emacs-client'
+#+end_src
+The alias =eo= followed by a filename will run the open the file in a new frame but with the current instance of emacs through the client / daemon running in the background. The options have the following effect:
+- =--no-wait= this will not block the terminal once the file is launched
+- =-c= this will ensure that  a gui client is always used to open the file in a new frame
+- =--alternative-editor= will ensure that if the emacs client was not running in the backgroun, it will first launch it and then open the file
+  When the files are not launched using the terminal, then file associations have to be made to open all text editable files to be opened using Emacs
+** Use vim to view the manpages
 Better syntax hightlight and navigation
 #+begin_src bash-ts
 export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
