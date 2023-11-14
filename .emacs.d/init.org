@@ -62,11 +62,29 @@
 #+end_src
 
 * Minibuffer
+** Ivy for minibuffer completions
 #+begin_src emacs-lisp
-  ;; minibuffer completions
-  (setq ido-enable-flex-matching t)
-  (setq ido-everywhere t)
-  (ido-mode 1)
+      ;; minibuffer completions
+      (use-package ivy
+        :ensure t
+        :config
+        (ivy-mode 1)
+        (setq ivy-use-virtual-buffers t)
+        (setq ivy-count-format "(%d/%d) ")
+        :bind
+        (("C-x b" . 'ivy-switch-buffer)
+         ("C-c C-r" . 'ivy-resume)
+         ("C-c t" . 'counsel-load-theme)))
+#+end_src
+** Consel for find file and related completions
+#+begin_src emacs-lisp
+  (use-package counsel
+    :ensure t
+    :bind
+    (("M-x" . 'counsel-M-x)
+     ("C-x C-f" . 'counsel-find-file))
+    :config
+    (setq ivy-initial-inputs-alist nil))
 #+end_src
 
 * Dired / File Management
@@ -197,13 +215,6 @@
   (load-theme 'doom-palenight t)            ;; main theme
 #+end_src
 
-** Transparency
-#+begin_src
-  (set-frame-parameter nil 'alpha-background 70)
-
-  (add-to-list 'default-frame-alist '(alpha-background . 70))
-#+end_src
-
 * Scrolling
 #+begin_src emacs-lisp
   (setq scroll-preserve-screen-position t) ;; preserve scrolling position
@@ -316,7 +327,33 @@
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
 #+end_src
 
+* IDE Features
+*** Magit
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t)
+#+end_src
+*** Projectile
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    :init
+    (projectile-mode +1)
+    :bind (:map projectile-mode-map
+                ("s-p" . projectile-command-map)
+                ("C-c p" . projectile-command-map)))
+
+  ;; add space separated list, projectile will recursively search though each of the projects under these folders
+  (setq projectile-project-search-path '("~/programming/" "~/projects/"))
+  ;; install emacs ag and ripgrep packages, they are needed for some projectile commands
+  (use-package ag
+    :ensure t)
+  (use-package ripgrep
+    :ensure t)
+#+end_src
+
 * External Packages
+
 ** Async mode
 #+begin_src emacs-lisp
   (use-package async
@@ -355,12 +392,6 @@
     :config
     (global-set-key (kbd "M-p") 'move-text-up)
     (global-set-key (kbd "M-n") 'move-text-down))
-#+end_src
-** IDE Features
-*** Magit
-#+begin_src emacs-lisp
-  (use-package magit
-    :ensure t)
 #+end_src
 * Reducing RSI
 ** keybindings
