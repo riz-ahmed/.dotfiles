@@ -93,13 +93,11 @@
     :after all-the-icons
     :hook (dired-mode . all-the-icons-dired-mode))
 #+end_src
-
 ** autosave and auto-revert buffers
 #+begin_src emacs-lisp
   (global-auto-revert-mode 1)             ;; auto-revert changed files
   (setq global-auto-revert-non-file-buffers t) ;; auto-revert for non-file buffers
 #+end_src
-
 ** Dired display settings
 #+begin_src emacs-lisp
   (setq dired-omit-files "^\\.[^.].*"
@@ -110,7 +108,11 @@
   (when (or (eq system-type 'gnu/linux) (eq system-type 'windows-nt))
     (setq dired-listing-switches "-agho --group-directories-first"))
 #+end_src
-
+** use 'h' key to dired-up-directory
+#+begin_src emacs-lisp
+(eval-after-load 'dired
+  '(define-key dired-mode-map (kbd "h") 'dired-up-directory))
+#+end_src
 ** Dired-x for addtional features
 #+begin_src emacs-lisp
   (autoload 'dired-omit-mode "dired-x")   ;; dired-x has some additonal features
@@ -256,10 +258,10 @@
 ** org-babel
 #+begin_src emacs-lisp
   ;; org-babel activate languages
-(org-babel-do-load-languages
-  'org-babel-load-languages
-  '((emacs-lisp . t)
-    (python . t)))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)))
 
   (setq org-confirm-babel-evaluate nil)   ;; avoid emacs asking for yes or no questions
 
@@ -268,6 +270,7 @@
     :config
     (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
     (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("ba" . "src bash-ts"))
     (add-to-list 'org-structure-template-alist '("py" . "src python")))
 #+end_src
 ** org-roam

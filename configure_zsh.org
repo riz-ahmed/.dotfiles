@@ -1,12 +1,73 @@
 #+title ZSH Configuration
 
+* files controlling zsh configuration
+** =$ZDOTDIR/.zshenv=
+*** should only contain users environment variables
+** =$ZDOTDIR/.zprofile=
+*** can be used to execute commands just after login
+** =$ZDOTDIR/.zshrc=
+*** should be used for shell configuration as well as executing commands
+** =$ZDOTDIR/.zlogin=
+*** read after .zshrc
+** =$ZDOTDIR/.zlogout=
+*** used to execute commands when shell exits
 * Setting up the .zshevn
 This file should only contain users environment variables such as XDG variables, ZDOT variables etc
 #+begin_src bash-ts-mode :tangle ~/.zshenv :mkdirp yes
 #!/usr/bin/zsh
 #+end_src
-the variable =$ZDOTDIR= can be used to control where the .zsh configuration files are to be looked
+the variable =$ZDOTDIR= can be used to control where the .zsh configuration files are to be looked instead of the default location at =$HOME/.zshrc=
 #+begin_src bash-ts-mode :tangle ~/.zshenv :mkdirp yes
 export XDG_CONFIG_HOME="$HOME/.config"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 #+end_src
+
+* Setting up .zshrc
+#+begin_src bash-ts :tangle ~/.config/zsh/.zshrc
+#!/usr/bin/zsh
+#+end_src
+** Enable full Emacs keybings emulation in zsh terminal
+#+begin_src bash-ts :tangle ~/.config/zsh/.zshrc
+bindkey -e
+bindkey '^Y' yank
+bindkey '^R' history-incremental-search-backward
+bindkey '^S' history-incremental-search-forward
+#+end_src
+
+*** Use vim to view the manpages
+Better syntax hightlight and navigation
+#+begin_src bash-ts
+export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
+viman () { text=$(man "$@") && echo "$text" | vim -R +":set ft=man" - ; }
+#+end_src
+
+** Functions
+
+*** Auto pushd and popd
+ZSH's =dirs= comamnd will =popd= directories listed in the =dirs= fucntion variable in last in first out fashion. =dirs -v= will already index all the directories which can be then used to pipe to the =cd -n= command to change to the selected directory, where =n= is the index number.
+#+begin_src bash-ts :tangle ~/.config/zsh/.zshrc
+  DIRSTACKSIZE=8                  # stack will autosave last 8 dir's visited
+  setopt autopushd pushdsilent pushdignoredups # enable autopsushd options
+  pcd(){
+      eval cd "$(dirs -v | fzf | awk '{print $2}')"
+  }
+#+end_src
+*** cd into current directory using fzf
+Just makes it a little easier to cd into a dir by directly searching and cd'ing in
+#+begin_src bash-ts-mode :tangle ~/.config/zsh/.zshrc
+fcd(){
+cd $(find . -maxdepth 1 -type d | fzf)
+}
+#+end_src
+*** List history commands and copy them to the clipboard
+#+begin_src bash-ts
+h(){
+history | cut -c 8- | sort | uniq | fzf | tr '\\n' ' ' | xclip -selection "clipboard"
+}
+#+end_src
+** Setting up autocomplition in .zshrc
+The function =compinit= needs to be called for zsh to perfrom autocomplete
+#+begin_src bash-ts :tangle ~/.config/zsh/.zshrc
+autoload -U compinit; compinit
+#+end_src
+The autoload comamnd will load (lazy-loading) the necessary shell commands. ZSH will search through the path that is defined by the variable =$fpath= and look for a file called =compinit=. Finally, all commands from the =compinit= file will be loaded as function which are then made available for autocompletion use
