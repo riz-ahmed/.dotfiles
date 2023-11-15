@@ -399,7 +399,8 @@
   ;; using kmonad to reamp space as an externded ctrl modifier
   ;; and k to Meta when presss and held
   (setq god-mode-enable-function-key-translation nil)
-  (require 'god-mode)
+  (use-package god-mode
+    :ensure t)
   (global-set-key (kbd "<escape>") #'god-mode-all)
   (custom-set-faces
    '(god-mode-lighter ((t (:inherit error)))))
@@ -423,6 +424,10 @@
   (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
   (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
   (add-to-list 'god-exempt-major-modes '(dired-mode compilation-mode))
+#+end_src
+** Repeat mode
+#+begin_src emacs-lisp
+(repeat-mode 1)
 #+end_src
 * Encryption
 #+begin_src emacs-lisp :tangel yes
