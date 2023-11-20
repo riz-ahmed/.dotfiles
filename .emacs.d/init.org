@@ -109,9 +109,10 @@
   (add-to-list 'god-exempt-major-modes '(dired-mode compilation-mode))
 #+end_src
 *** Visual indication when GOD-MODE is active using set-cursor-color function
+When the cursor is RED then god-mode is active, else its purple
 #+begin_src emacs-lisp
   (defun my-god-mode-update-cursor-color ()
-    ""
+    "toggle cursor color when in GOD-MODE"
     (if (or god-local-mode buffer-read-only)
         (set-cursor-color "#ff0000")
       (set-cursor-color "#6b389e")))
