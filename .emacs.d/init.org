@@ -61,6 +61,67 @@
   (setq dired-recursive-deletes 'always)                     ;; don't ask confimation questions
 #+end_src
 
+* Reducing RSI
+** keybindings
+*** Disable function key modificaiton by GOD-MODE
+#+begin_src emacs-lisp
+(setq god-mode-enable-function-key-translation nil)
+#+end_src
+*** Enable GOD-MODE and setup toggle globally
+#+begin_src emacs-lisp
+  (use-package god-mode
+    :ensure t)
+  (global-set-key (kbd "<escape>") #'god-mode-all)
+#+end_src
+
+*** Configuration for overwrite mode in GOD-MODE
+#+begin_src emacs-lisp
+(defun my-god-mode-toggle-on-overwrite ()
+    "Toggle god-mode on overwrite-mode."
+    (if (bound-and-true-p overwrite-mode)
+        (god-local-mode-pause)
+      (god-local-mode-resume)))
+
+  (add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
+#+end_src
+*** Toggle isearch in GOD-MODE as well
+#+begin_src emacs-lisp
+  (require 'god-mode-isearch)
+  (define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
+#+end_src
+*** Toggle god-local-mode using the "i" key
+#+begin_src emacs-lisp
+  (define-key god-local-mode-map (kbd "i") #'god-local-mode)
+#+end_src
+*** Configure keybindings for windows navigation while in GOD-MODE
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-1") #'delete-other-windows)
+  (global-set-key (kbd "C-x C-2") #'split-window-below)
+  (global-set-key (kbd "C-x C-3") #'split-window-right)
+  (global-set-key (kbd "C-x C-0") #'delete-window)
+
+  (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+  (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+#+end_src
+*** Disable GOD-MODE while in Dired-Mode
+#+begin_src emacs-lisp
+  (add-to-list 'god-exempt-major-modes '(dired-mode compilation-mode))
+#+end_src
+*** Visual indication when GOD-MODE is active using set-cursor-color function
+#+begin_src emacs-lisp
+  (defun my-god-mode-update-cursor-color ()
+    ""
+    (if (or god-local-mode buffer-read-only)
+        (set-cursor-color "#ff0000")
+      (set-cursor-color "#6b389e")))
+
+  (add-hook 'post-command-hook #'my-god-mode-update-cursor-color)
+#+end_src
+** Repeat mode
+#+begin_src emacs-lisp
+(repeat-mode 1)
+#+end_src
 * Minibuffer
 ** Ivy for minibuffer completions
 #+begin_src emacs-lisp
@@ -82,9 +143,9 @@
     :ensure t
     :bind
     (("M-x" . 'counsel-M-x)
-     ("C-x C-f" . 'counsel-find-file))
-    :config
-    (setq ivy-initial-inputs-alist nil))
+     ("C-x C-f" . 'counsel-find-file)))
+    ;; :config
+    ;; (setq ivy-initial-inputs-alist nil))
 #+end_src
 
 * Dired / File Management
@@ -392,42 +453,6 @@
     :config
     (global-set-key (kbd "M-p") 'move-text-up)
     (global-set-key (kbd "M-n") 'move-text-down))
-#+end_src
-* Reducing RSI
-** keybindings
-#+begin_src emacs-lisp
-  ;; using kmonad to reamp space as an externded ctrl modifier
-  ;; and k to Meta when presss and held
-  (setq god-mode-enable-function-key-translation nil)
-  (use-package god-mode
-    :ensure t)
-  (global-set-key (kbd "<escape>") #'god-mode-all)
-  (custom-set-faces
-   '(god-mode-lighter ((t (:inherit error)))))
-  (defun my-god-mode-toggle-on-overwrite ()
-    "Toggle god-mode on overwrite-mode."
-    (if (bound-and-true-p overwrite-mode)
-        (god-local-mode-pause)
-      (god-local-mode-resume)))
-
-  (add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
-  (require 'god-mode-isearch)
-  (define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
-  (define-key god-local-mode-map (kbd "i") #'god-local-mode)
-  (define-key god-local-mode-map (kbd ".") #'repeat)
-  (global-set-key (kbd "C-x C-1") #'delete-other-windows)
-  (global-set-key (kbd "C-x C-2") #'split-window-below)
-  (global-set-key (kbd "C-x C-3") #'split-window-right)
-  (global-set-key (kbd "C-x C-0") #'delete-window)
-
-  (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
-  (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
-  (add-to-list 'god-exempt-major-modes '(dired-mode compilation-mode))
-#+end_src
-** Repeat mode
-#+begin_src emacs-lisp
-(repeat-mode 1)
 #+end_src
 * Encryption
 #+begin_src emacs-lisp :tangel yes
