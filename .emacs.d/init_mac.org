@@ -1,0 +1,510 @@
+#+title Emacs Configuration
+#+PROPERTY: header-args:emacs-lisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+* Initialise packages
+#+begin_src emacs-lisp :tangle yes
+  (require 'package)
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+           ("elpa" . "https://elpa.gnu.org/packages/")))
+  (package-initialize)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (eval-and-compile
+    (setq use-package-always-ensure t
+      use-package-expand-minimally t))
+#+end_src
+
+* Basic Configuration
+** Startup Settings
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold (* 50 1000 1000)) ;; increasing garbage collection thresold for faster startup times
+#+end_src
+
+** Some Helpful Settings
+#+begin_src emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)           ;; ask y or n instead of yes or no
+  (defalias 'list-buffers 'ibuffer)       ;; improved version of listing iBuffers
+  (setq echo-keystrokes 0.1)              ;; show keystrokes in minibuffer instantly
+  (global-subword-mode 1)                 ;; camelCase string wills be treated as separate words
+
+  (add-hook 'before-save-hook 'whitespace-cleanup)
+  (add-hook 'before-save-hook (lambda() (delete-trailing-whitespace))) ;; remove whitespaces while saving
+
+  ;; auto-delete hightlighted text
+  (delete-selection-mode 1)
+#+end_src
+
+** non GUI
+#+begin_src emacs-lisp
+  ;; inhibit the startup screen
+  (setq inhibit-startup-screen t)
+
+  ;; remove all gui
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tooltip-mode -1)
+  (set-fringe-mode -1)
+  (show-paren-mode 1)
+  (setq visible-bell t)
+    (setq use-dialog-box nil)               ;; diasable UI pop-up to keep fully keyboard driven
+    ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized)) ;; start emacs in fullscreen
+#+end_src
+
+** Display shell properly
+#+begin_src emacs-lisp
+  (add-hook 'shell-mode-hook 'ansi-color=for-comint-mode-on) ;; diaplay colored shell properly
+  (setq dired-enable-globstar-in-shell t)                    ;; enable globbing in shell-mode
+  (setq dired-recursive-deletes 'always)                     ;; don't ask confimation questions
+#+end_src
+
+* Minibuffer
+** Ivy for minibuffer completions
+#+begin_src emacs-lisp
+      ;; minibuffer completions
+      (use-package ivy
+        :ensure t
+        :config
+        (ivy-mode 1)
+        (setq ivy-use-virtual-buffers t)
+        (setq ivy-count-format "(%d/%d) ")
+        :bind
+        (("C-x b" . 'ivy-switch-buffer)
+         ("C-c C-r" . 'ivy-resume)
+         ("C-c t" . 'counsel-load-theme)))
+#+end_src
+** Consel for find file and related completions
+#+begin_src emacs-lisp
+  (use-package counsel
+    :ensure t
+    :bind
+    (("M-x" . 'counsel-M-x)
+     ("C-x C-f" . 'counsel-find-file)))
+#+end_src
+
+* Reducing RSI
+** Prep before EVIL
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-M-u") 'universal-argument)
+#+end_src
+
+** keybindings
+One Mac its just better to use EVIL keybinding
+#+begin_src emacs-lisp
+  (defun evil-hook ()
+    (dolist (mode '(custom-mode
+            eshell-mode
+            git-rebase-mode
+            erc-mode
+            circe-server-mode
+            circe-chat-mode
+            circe-query-mode
+            sauron-mode
+            term-mode))
+    (add-to-list 'evil-emacs-state-modes mode)))
+
+  (use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
+  (setq evil-respect-visual-line-mode t)
+  (setq evil-undo-system 'undo-tree)
+  :config
+  (add-hook 'evil-mode-hook 'evil-hook)
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
+
+  (use-package evil-collection
+  :after evil
+  :init
+  (setq evil-collection-company-use-tng nil)  ;; Is this a bug in evil-collection?
+  :custom
+  (evil-collection-outline-bind-tab-p nil)
+  :config
+  (setq evil-collection-mode-list
+    (remove 'lispy evil-collection-mode-list))
+  (evil-collection-init))
+#+end_src
+** Undo-tree
+#+begin_src emacs-lisp
+(use-package undo-tree
+  :ensure t
+  :init
+  (defvar my-undo-tree-history-directory "~/.emacs.d/undo-history/")
+  (unless (file-exists-p my-undo-tree-history-directory)
+    (make-directory my-undo-tree-history-directory t))
+
+  (setq undo-tree-history-directory-alist `(("." . ,my-undo-tree-history-directory)))
+
+  :config
+  (global-undo-tree-mode 1))
+#+end_src
+** General key using space bar
+#+begin_src emacs-lisp
+  (use-package general
+    :config
+    (general-evil-setup t)
+
+    (general-create-definer leader-key-def
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC"
+      :global-prefix "M-SPC"))
+
+    (leader-key-def
+     "x" '(:ignore t :wk "prefix-key")
+     "x s" '(save-buffer :wk "save-buffer")
+     "x o" '(other-window :wk "other-window")
+     "x k" '(ido-kill-buffer :wk "ido-kill-buffer")
+     "x f" '(counsel-find-file :wk "counsel-find-file")
+     "x b" '(ivy-switch-buffer :wk "ivy-switch-buffer")
+     "x d" '(ido-dired :wk "ido-dired")
+     "x x" '(counsel-M-x :wk "execute-extended-command")
+     "x e" '(eval-last-sexp :wk "eval-last-sexp")
+     "x 0" '(delete-window :wk "delete-window")
+     "x 1" '(delte-other-windows :wk "delete-other-windows")
+     "x 2" '(split-window-below :wk "split-window-below")
+     "x 3" '(split-window-right :wk "split-window-right")
+     "c" '(:ignore t :wk "C-c prefix")
+     "c t" '(counsel-load-theme :wk "counsel-load-theme")
+     "c r" '(ivy-resume :wk "ivy-resume"))
+#+end_src
+** Shift tab using evil-mode
+#+begin_src emacs-lisp
+(setq-default evil-shift-width tab-width)
+#+end_src
+** EVIL Keybindings in Dired
+#+begin_src emacs-lisp
+  (use-package dired-single
+    :defer t)
+
+  (use-package dired-ranger
+    :defer t)
+
+  (use-package dired-collapse
+    :defer t)
+
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "H" 'dired-omit-mode
+    "l" 'dired-single-buffer
+    "y" 'dired-ranger-copy
+    "X" 'dired-ranger-move
+    "p" 'dired-ranger-paste)
+#+end_src
+* Dired / File Management
+** File backups
+#+begin_src emacs-lisp
+  ;; disable emacs to automatically save files
+  (setq make-backup-files nil)
+  (setq backup-inhibited t)
+  (setq auto-save-default nil)
+
+  ;; Save backup files in a dedicated directory
+  (setq backup-directory-alist '(("." . "~/.saves")))
+
+#+end_src
+
+** all the icons in dired
+#+begin_src emacs-lisp
+  ;; display icons in dired-mode
+  (let ((installed (package-installed-p 'all-the-icons)))
+    (use-package all-the-icons)
+    (unless installed (all-the-icons-install-fonts)))
+
+  (use-package all-the-icons-dired
+    :after all-the-icons
+    :hook (dired-mode . all-the-icons-dired-mode))
+#+end_src
+
+** autosave and auto-revert buffers
+#+begin_src emacs-lisp
+  (global-auto-revert-mode 1)             ;; auto-revert changed files
+  (setq global-auto-revert-non-file-buffers t) ;; auto-revert for non-file buffers
+#+end_src
+
+** Dired display settings
+#+begin_src emacs-lisp
+  (setq dired-omit-files "^\\.[^.].*"
+    dired-omit-verbose nil
+    dired-hide-details-hide-symlink-targets nil
+    delete-by-moving-to-trash t)
+
+  (when (or (eq system-type 'gnu/linux) (eq system-type 'windows-nt))
+    (setq dired-listing-switches "-agho --group-directories-first"))
+#+end_src
+
+** Dired-x for addtional features
+#+begin_src emacs-lisp
+  (autoload 'dired-omit-mode "dired-x")   ;; dired-x has some additonal features
+#+end_src
+
+* Set Locale
+#+begin_src emacs-lisp
+  (set-language-environment 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (setq locale-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+#+end_src
+
+* Fonts
+#+begin_src emacs-lisp
+  (set-face-attribute 'default nil :font "Iosevka" :height 180)
+#+end_src
+
+* Progaramming
+** General settings
+#+begin_src emacs-lisp
+  ;; line numbers
+  (column-number-mode)
+  (global-display-line-numbers-mode t)
+  (setq display-line-numbers-type 'relative)
+
+  (electric-pair-mode 1)                                         ;; enable autopairs by default
+
+  ;; will display the funtion def in the menu bar (ide like feature)
+  (add-hook 'my-mode-hook 'imenu-add-menubar-index)
+  (global-set-key (kbd "C-S-f") 'imenu)
+
+
+  (setq-default indent-tabs-mode nil)     ;; use spaces instead of tabs
+
+  (setq-default tab-width 4)
+
+  ;; '(tab-stop-list '(4 9 14 19 24 29 34 39 44 49 54 59 64 69 74 79))
+
+#+end_src
+** C-Programming
+#+begin_src emacs-lisp
+  ;; c-style comments
+  (setq-default c-basic-offset 4
+    c-default-style '((java-mode . "java")
+          (awk-mode . "awk")))
+  (add-hook 'c-mode-hook (lambda ()
+           (interactive)
+           (c-toggle-comment-style -1)))
+#+end_src
+
+** Markdown
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :mode "\\.md\\'"
+    :config
+    (setq markdown-command "marked")
+    (defun  set-markdown-header-font-sizes ()
+      (dolist (face '((markdown-header-face-1 . 1.2)
+          (markdown-header-face-2 . 1.1)
+          (markdown-header-face-3 . 1.0)
+          (markdown-header-face-4 . 1.0)
+          (markdown-header-face-5 . 1.0)))
+    (set-face-attribute (car face) nil :weight 'normal :height (cdr face))))
+    (defun mardown-mode-hook ()
+      (set-markdown-header-font-sizes))
+
+    (add-hook 'markdown-mode-hook 'markdown-mode-hook))
+#+end_src
+
+* Unbind nuisance keybindings
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-z") nil)    ;; disable (supend-frame) command. Very annoying at times
+  ;; (global-set-key (kbd "C-z") nil)        ;; (suspend-frame) also bound to this combination
+#+end_src
+
+* Theme
+#+begin_src emacs-lisp
+  (load-theme 'doom-palenight t)            ;; main theme
+#+end_src
+
+** Transparency
+#+begin_src
+  (set-frame-parameter nil 'alpha-background 70)
+
+  (add-to-list 'default-frame-alist '(alpha-background . 70))
+#+end_src
+
+* Scrolling
+#+begin_src emacs-lisp
+  (setq scroll-preserve-screen-position t) ;; preserve scrolling position
+
+  ;; Smooth Vertical Scroll
+  (setq scroll-step 1)
+  (setq scroll-margin 1)
+  (setq scroll-conservatively 101)
+  (setq scroll-up-aggressively 0.01)
+  (setq scroll-down-aggressively 0.01)
+  (setq auto-window-vscroll nil)
+  (setq fast-but-imprecise-scrolling nil)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+  (setq mouse-wheel-progressive-speed nil)
+
+  (save-place-mode 1)                     ;; restore last cursor location
+
+  (when (or (eq system-type 'gnu/linux) (eq system-type 'windows-nt))
+    (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up with point
+    (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v")))   ;; scroll down with point
+#+end_src
+
+* Org-mode
+** org-mode
+#+begin_src emacs-lisp
+  (defun org-mode-setup ()
+    (org-indent-mode)
+    (setq evil-auto-indent nil)
+    (visual-line-mode 1))
+
+  (setq org-modules
+    '(org-crypt
+      org-habit
+      org-bookmark
+      org-eshell))
+
+  (use-package org
+    :hook (org-mode . org-mode-setup)
+    :config (setq org-ellipsis " ▾")
+    (setq org-directory "~/Notes/org-mode")
+    (setq org-agenda-start-with-log-mode t)
+    (setq org-log-done 'time)
+    (setq org-log-into-drawer t))
+#+end_src
+*** org-mode packages
+#+begin_src
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+#+end_src
+** Evil keybindings when in EVIL mode
+#+begin_src emacs-lisp
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'org-next-visible-heading)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'org-previous-visible-heading)
+
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-j") 'org-metadown)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-k") 'org-metaup)
+#+end_src
+** org-babel
+#+begin_src emacs-lisp
+  ;; org-babel activate languages
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((emacs-lisp . t)
+    (python . t)))
+
+  (setq org-confirm-babel-evaluate nil)   ;; avoid emacs asking for yes or no questions
+
+  (use-package org-tempo
+    :ensure nil
+    :config
+    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("py" . "src python")))
+#+end_src
+** org-roam
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/Notes/org-roam-notes")
+    (org-roam-completion-everywhere t)
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+       ("C-c n f" . org-roam-node-find)
+       ("C-c n i" . org-roam-node-insert)
+       :map org-mode-map
+       ("C-M-i"    . completion-at-point))
+    :config
+    (org-roam-setup))
+
+  (setq find-file-visit-truename t)                   ;; force emacs to always resolve symlinks (performace cost)
+
+  ;; over-ride the behaviour of org-roam note search to be case-insensitive
+  (defun case-insensitive-org-roam-node-read (orig-fn &rest args)
+    (let ((completion-ignore-case t))
+      (apply orig-fn args)))
+
+  (advice-add 'org-roam-node-read :around
+   #'case-insensitive-org-roam-node-read)
+
+  ;; enable database autosync
+  (org-roam-db-autosync-mode 1)
+#+end_src
+** Automatically tangle when this file is saved
+#+begin_src emacs-lisp
+  ;; Automatically tangle our Emacs.org config file when we save it
+  (defun org-babel-tangle-config ()
+    (when (string-equal (buffer-file-name)
+            (expand-file-name "~/.emacs.d/init.org"))
+      ;; Dynamic scoping to the rescue
+      (let ((org-confirm-babel-evaluate nil))
+    (org-babel-tangle))))
+
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
+#+end_src
+
+* External Packages
+** Async mode
+#+begin_src emacs-lisp
+  (use-package async
+    :ensure t
+    :init (dired-async-mode 1))
+#+end_src
+
+** Which-key (for self-documented suggestions)
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config
+    (which-key-mode))
+#+end_src
+** multiple-cursors
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :config
+    (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+    (global-set-key (kbd "C->")         'mc/mark-next-like-this)
+    (global-set-key (kbd "C-<")         'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c C-<")     'mc/mark-all-like-this)
+    (global-set-key (kbd "C-\"")        'mc/skip-to-next-like-this)
+    (global-set-key (kbd "C-:")         'mc/skip-to-previous-like-this))
+#+end_src
+** company (auto-completions)
+#+begin_src emacs-lisp
+  ;; (require 'company)
+  ;; (add-hook 'after-init-hook 'global-company-mode)
+#+end_src
+** move-text
+#+begin_src emacs-lisp
+  (use-package move-text
+    :ensure t
+    :config
+    (global-set-key (kbd "M-p") 'move-text-up)
+    (global-set-key (kbd "M-n") 'move-text-down))
+#+end_src
+** IDE Features
+*** Magit
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t)
+#+end_src
+* Encryption
+#+begin_src emacs-lisp
+  ;; automatic encryption and decryption for gpg encrypted files
+  (require 'epa-file)
+  (epa-file-enable)
+
+  ;; allowing for password prompt in minibuffer
+  (setq epa-pinentry-mode 'loopback)
+#+end_src
