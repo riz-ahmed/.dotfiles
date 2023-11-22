@@ -84,122 +84,6 @@
      ("C-x C-f" . 'counsel-find-file)))
 #+end_src
 
-* Reducing RSI
-** Prep before EVIL
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-M-u") 'universal-argument)
-#+end_src
-
-** keybindings
-One Mac its just better to use EVIL keybinding
-#+begin_src emacs-lisp
-  (defun evil-hook ()
-    (dolist (mode '(custom-mode
-            eshell-mode
-            git-rebase-mode
-            erc-mode
-            circe-server-mode
-            circe-chat-mode
-            circe-query-mode
-            sauron-mode
-            term-mode))
-    (add-to-list 'evil-emacs-state-modes mode)))
-
-  (use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
-  (setq evil-respect-visual-line-mode t)
-  (setq evil-undo-system 'undo-tree)
-  :config
-  (add-hook 'evil-mode-hook 'evil-hook)
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
-
-  (use-package evil-collection
-  :after evil
-  :init
-  (setq evil-collection-company-use-tng nil)  ;; Is this a bug in evil-collection?
-  :custom
-  (evil-collection-outline-bind-tab-p nil)
-  :config
-  (setq evil-collection-mode-list
-    (remove 'lispy evil-collection-mode-list))
-  (evil-collection-init))
-#+end_src
-** Undo-tree
-#+begin_src emacs-lisp
-(use-package undo-tree
-  :ensure t
-  :init
-  (defvar my-undo-tree-history-directory "~/.emacs.d/undo-history/")
-  (unless (file-exists-p my-undo-tree-history-directory)
-    (make-directory my-undo-tree-history-directory t))
-
-  (setq undo-tree-history-directory-alist `(("." . ,my-undo-tree-history-directory)))
-
-  :config
-  (global-undo-tree-mode 1))
-#+end_src
-** General key using space bar
-#+begin_src emacs-lisp
-  (use-package general
-    :config
-    (general-evil-setup t)
-
-    (general-create-definer leader-key-def
-      :keymaps '(normal insert visual emacs)
-      :prefix "SPC"
-      :global-prefix "C-SPC"
-      :global-prefix "M-SPC"))
-
-    (leader-key-def
-     "x" '(:ignore t :wk "prefix-key")
-     "x s" '(save-buffer :wk "save-buffer")
-     "x o" '(other-window :wk "other-window")
-     "x k" '(ido-kill-buffer :wk "ido-kill-buffer")
-     "x f" '(counsel-find-file :wk "counsel-find-file")
-     "x b" '(ivy-switch-buffer :wk "ivy-switch-buffer")
-     "x d" '(ido-dired :wk "ido-dired")
-     "x x" '(counsel-M-x :wk "execute-extended-command")
-     "x e" '(eval-last-sexp :wk "eval-last-sexp")
-     "x 0" '(delete-window :wk "delete-window")
-     "x 1" '(delte-other-windows :wk "delete-other-windows")
-     "x 2" '(split-window-below :wk "split-window-below")
-     "x 3" '(split-window-right :wk "split-window-right")
-     "c" '(:ignore t :wk "C-c prefix")
-     "c t" '(counsel-load-theme :wk "counsel-load-theme")
-     "c r" '(ivy-resume :wk "ivy-resume"))
-#+end_src
-** Shift tab using evil-mode
-#+begin_src emacs-lisp
-(setq-default evil-shift-width tab-width)
-#+end_src
-** EVIL Keybindings in Dired
-#+begin_src emacs-lisp
-  (use-package dired-single
-    :defer t)
-
-  (use-package dired-ranger
-    :defer t)
-
-  (use-package dired-collapse
-    :defer t)
-
-  (evil-collection-define-key 'normal 'dired-mode-map
-    "h" 'dired-single-up-directory
-    "H" 'dired-omit-mode
-    "l" 'dired-single-buffer
-    "y" 'dired-ranger-copy
-    "X" 'dired-ranger-move
-    "p" 'dired-ranger-paste)
-#+end_src
 * Dired / File Management
 ** File backups
 #+begin_src emacs-lisp
@@ -453,6 +337,121 @@ One Mac its just better to use EVIL keybinding
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
 #+end_src
 
+* Reducing RSI
+** Prep before EVIL
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-M-u") 'universal-argument)
+#+end_src
+
+** Setup EVIL Mode
+One Mac its just better to use EVIL keybinding
+#+begin_src emacs-lisp
+  (defun evil-hook ()
+    (dolist (mode '(custom-mode
+            eshell-mode
+            git-rebase-mode
+            erc-mode
+            circe-server-mode
+            circe-chat-mode
+            circe-query-mode
+            sauron-mode
+            term-mode))
+    (add-to-list 'evil-emacs-state-modes mode)))
+
+  (use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
+  (setq evil-respect-visual-line-mode t)
+  (setq evil-undo-system 'undo-tree)
+  :config
+  (add-hook 'evil-mode-hook 'evil-hook)
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
+
+  (use-package evil-collection
+  :after evil
+  :init
+  (setq evil-collection-company-use-tng nil)  ;; Is this a bug in evil-collection?
+  :custom
+  (evil-collection-outline-bind-tab-p nil)
+  :config
+  (setq evil-collection-mode-list
+    (remove 'lispy evil-collection-mode-list))
+  (evil-collection-init))
+#+end_src
+** Undo-tree
+#+begin_src emacs-lisp
+(use-package undo-tree
+  :ensure t
+  :config
+  (global-undo-tree-mode 1))
+(with-eval-after-load 'undo-tree
+  (setq undo-tree-auto-save-history nil))
+#+end_src
+** General key and Keybindings
+#+begin_src emacs-lisp
+  (use-package general
+    :config
+    (general-evil-setup t)
+
+    (general-create-definer leader-key-def
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC"
+      :global-prefix "M-SPC"))
+
+    (leader-key-def
+     "x" '(:ignore t :wk "prefix-key")
+     "xb" '(ivy-switch-buffer :wk "ivy-switch-buffer")
+     "xc" '(save-buffers-kill-terminal :wk "save-buffers-kill-terminal")
+     "xd" '(ido-dired :wk "ido-dired")
+     "xe" '(eval-last-sexp :wk "eval-last-sexp")
+     "xf" '(counsel-find-file :wk "counsel-find-file")
+     "xk" '(ido-kill-buffer :wk "ido-kill-buffer")
+     "xo" '(other-window :wk "other-window")
+     "xp" '(mark-page :wk "mark-page")
+     "xs" '(save-buffer :wk "save-buffer")
+     "xx" '(counsel-M-x :wk "execute-extended-command")
+     "x0" '(delete-window :wk "delete-window")
+     "x1" '(delete-other-windows :wk "delete-other-windows")
+     "x2" '(split-window-below :wk "split-window-below")
+     "x3" '(split-window-right :wk "split-window-right")
+     "c" '(:ignore t :wk "C-c prefix")
+     "cnf" '(org-roam-node-find :wk "org-roam-node-find")
+     "cni" '(org-roam-node-insert :wk "org-roam-node-insert")
+     "ct" '(counsel-load-theme :wk "counsel-load-theme")
+     "cr" '(ivy-resume :wk "ivy-resume"))
+#+end_src
+** Shift tab using evil-mode
+#+begin_src emacs-lisp
+(setq-default evil-shift-width tab-width)
+#+end_src
+** EVIL Keybindings in Dired
+#+begin_src emacs-lisp
+  (use-package dired-single
+    :defer t)
+
+  (use-package dired-ranger
+    :defer t)
+
+  (use-package dired-collapse
+    :defer t)
+
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "H" 'dired-omit-mode
+    "l" 'dired-single-buffer
+    "y" 'dired-ranger-copy
+    "X" 'dired-ranger-move
+    "p" 'dired-ranger-paste)
+#+end_src
 * External Packages
 ** Async mode
 #+begin_src emacs-lisp
