@@ -26,15 +26,11 @@
 ** Some Helpful Settings
 #+begin_src emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)           ;; ask y or n instead of yes or no
-  (defalias 'list-buffers 'ibuffer)       ;; improved version of listing iBuffers
+  (defalias 'list-buffers 'ibuffer)       ;; improved version of sting iBuffers
   (setq echo-keystrokes 0.1)              ;; show keystrokes in minibuffer instantly
   (global-subword-mode 1)                 ;; camelCase string wills be treated as separate words
 
   (add-hook 'before-save-hook 'whitespace-cleanup)
-  (add-hook 'before-save-hook (lambda() (delete-trailing-whitespace))) ;; remove whitespaces while saving
-  ;; auto-delete hightlighted text
-  (delete-selection-mode 1)
-  ;; (when window-system (add-hook 'prog-mode-hook 'hl-line-mode)) ;; hightlight current line (but only in GUI mode)
 #+end_src
 ** Non GUI
 *** Start EMACS in full-screen
@@ -43,7 +39,7 @@
 #+end_src
 *** GUI display settings
 #+begin_src emacs-lisp
-  (setq inhibit-startup-screen t)
+  (setq inhibit-startup-screen nil)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -214,14 +210,46 @@
 #+end_src
 
 * Theme
+** Theme customisation
 #+begin_src emacs-lisp
-  (load-theme 'doom-palenight t)            ;; main theme
+(require 'modus-themes)
+  (setq modus-themes-italic-constructs t
+        modus-themes-bold-constructs nil
+        modus-themes-mixed-fonts nil
+        modus-themes-variable-pitch-ui nil
+        modus-themes-custom-auto-reload t
+        modus-themes-disable-other-themes t
+
+        modus-themes-completions
+        '((matches . (underline))
+          (selection . (semibold italic text-also)))
+        modus-themes-org-blocks 'tinted-background)
+  ;; Remove the border
+  (setq modus-themes-common-palette-overrides
+        '((border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)))
+  ;; Subtle underlines for hyperlinks
+  (setq modus-themes-common-palette-overrides
+        '((underline-link border)
+          (underline-link-visited border)
+          (underline-link-symbolic border)))
+  ;; Blue background, neutral foreground, intense blue border
+  (setq modus-themes-common-palette-overrides
+        '((bg-mode-line-active bg-blue-intense)
+          (fg-mode-line-active fg-main)
+          (border-mode-line-active bg-blue-intense)))
+(setq modus-themes-common-palette-overrides
+      '((comment yellow-faint)
+        (string green-warmer)))
+#+end_src
+** Theme activation
+#+begin_src emacs-lisp
+  (load-theme 'doom-solarized-dark t)            ;; main theme
 #+end_src
 
 ** Transparency
 #+begin_src
   (set-frame-parameter nil 'alpha-background 70)
-
   (add-to-list 'default-frame-alist '(alpha-background . 70))
 #+end_src
 
@@ -501,55 +529,6 @@ One Mac its just better to use EVIL keybinding
     (global-set-key (kbd "M-p") 'move-text-up)
     (global-set-key (kbd "M-n") 'move-text-down))
 #+end_src
-* IDE Features
-** Magit
-The Git Inteface
-#+begin_src emacs-lisp
-  (use-package magit
-    :ensure t
-    :bind
-    ("M-g" . magit-status))
-#+end_src
-** Projectile
-*** Pre-projectile setup
-#+begin_src emacs-lisp
-  ;; (use-package fd
-  ;;   :ensure t)
-  (use-package ripgrep
-    :ensure t)
-  ;; (use-package counsel-project
-  ;;   :ensure t)
-#+end_src
-*** Projectile Setup
-#+begin_src emacs-lisp
-    (use-package projectile
-      :ensure t
-      :config
-      (setq projectile-require-project-root nil) ;; this line will allow for projectile commands to be run even outside of any project
-      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map) ;; counsel-projet uses this command
-      (projectile-mode 1))
-#+end_src
-*** Swiper
-Its supposedly a better i-search
-#+begin_src emacs-lisp
-(use-package swiper
-  :ensure t
-  :bind ("C-s" . 'swiper))
-#+end_src
-** Beacon
-#+begin_src emacs-lisp
-(use-package beacon
-  :ensure t
-  :config
-    (beacon-mode 1))
-#+end_src
-** Display hex color-codes
-#+begin_src emacs-lisp
-(use-package rainbow-mode
-  :ensure t
-  :init
-    (add-hook 'prog-mode-hook 'rainbow-mode))
-#+end_src
 ** Rainbow delimiters
 Match parenthesis using colors
 #+begin_src emacs-lisp
@@ -563,6 +542,57 @@ For auto-completions
 #+begin_src emacs-lisp
   (require 'company)
   (add-hook 'after-init-hook 'global-company-mode)
+#+end_src
+** Pulsar
+Pulse line under the point
+#+begin_src emacs-lisp
+  (use-package pulsar
+    :ensure t)
+#+end_src
+* IDE Features
+** Magit
+The Git Inteface
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind
+    ("M-g" . magit-status))
+#+end_src
+** Projectile
+*** Pre-projectile setup
+#+begin_src emacs-lisp
+  (use-package ag
+    :ensure t)
+  (use-package ripgrep
+    :ensure t)
+  ;; (use-package counsel-project
+  ;;   :ensure t)
+#+end_src
+*** Projectile Setup
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    :init
+    (projectile-mode +1)
+    :config
+    (setq projectile-require-project-root nil) ;; this line will
+    :bind (:map projectile-mode-map
+                ("s-p" . projectile-mode-map)
+                ("C-c p" . projectile-mode-map)))
+#+end_src
+*** Swiper
+Its supposedly a better i-search
+#+begin_src emacs-lisp
+(use-package swiper
+  :ensure t
+  :bind ("C-s" . 'swiper))
+#+end_src
+*** Display hex color-codes
+#+begin_src emacs-lisp
+(use-package rainbow-mode
+  :ensure t
+  :init
+    (add-hook 'prog-mode-hook 'rainbow-mode))
 #+end_src
 * Encryption
 #+begin_src emacs-lisp
@@ -583,7 +613,7 @@ Bash will be chosen as the default shell instead of asking everythime. On Emacs,
 (ad-activate 'ansi-term)
 #+end_src
 * Visit and refresh config file
-Uncle Dave's config
+From Uncle Dave's config
 #+begin_src emacs-lisp
 (defun config-visit ()
   (interactive)
