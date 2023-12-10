@@ -44,7 +44,7 @@ bindkey '^S' history-incremental-search-forward
   fi
 
   function open-with-emacs-client {
-      emacsclient --no-wait --alternative-editor="" -c "$"
+      emacsclient --no-wait --alternate-editor="" -c "$1"
   }
   alias eo='open-with-emacs-client'
 #+end_src
