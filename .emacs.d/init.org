@@ -5,7 +5,7 @@
 #+begin_src emacs-lisp
   (require 'package)
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-               ("elpa" . "https://elpa.gnu.org/packages/")))
+           ("elpa" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
 
   (unless (package-installed-p 'use-package)
@@ -61,82 +61,20 @@
   (setq dired-recursive-deletes 'always)                     ;; don't ask confimation questions
 #+end_src
 
-* Reducing RSI
-** keybindings
-*** Disable function key modificaiton by GOD-MODE
-#+begin_src emacs-lisp
-(setq god-mode-enable-function-key-translation nil)
-#+end_src
-*** Enable GOD-MODE and setup toggle globally
-#+begin_src emacs-lisp
-  (use-package god-mode
-    :ensure t)
-  (global-set-key (kbd "<escape>") #'god-mode-all)
-#+end_src
-
-*** Configuration for overwrite mode in GOD-MODE
-#+begin_src emacs-lisp
-(defun my-god-mode-toggle-on-overwrite ()
-    "Toggle god-mode on overwrite-mode."
-    (if (bound-and-true-p overwrite-mode)
-        (god-local-mode-pause)
-      (god-local-mode-resume)))
-
-  (add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
-#+end_src
-*** Toggle isearch in GOD-MODE as well
-#+begin_src emacs-lisp
-  (require 'god-mode-isearch)
-  (define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
-#+end_src
-*** Toggle god-local-mode using the "i" key
-#+begin_src emacs-lisp
-  (define-key god-local-mode-map (kbd "i") #'god-local-mode)
-#+end_src
-*** Configure keybindings for windows navigation while in GOD-MODE
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-x C-1") #'delete-other-windows)
-  (global-set-key (kbd "C-x C-2") #'split-window-below)
-  (global-set-key (kbd "C-x C-3") #'split-window-right)
-  (global-set-key (kbd "C-x C-0") #'delete-window)
-
-  (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
-  (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
-#+end_src
-*** Disable GOD-MODE while in Dired-Mode
-#+begin_src emacs-lisp
-  (add-to-list 'god-exempt-major-modes '(dired-mode compilation-mode))
-#+end_src
-*** Visual indication when GOD-MODE is active using set-cursor-color function
-When the cursor is RED then god-mode is active, else its purple
-#+begin_src emacs-lisp
-  (defun my-god-mode-update-cursor-color ()
-    "toggle cursor color when in GOD-MODE"
-    (if (or god-local-mode buffer-read-only)
-        (set-cursor-color "#ff0000")
-      (set-cursor-color "#6b389e")))
-
-  (add-hook 'post-command-hook #'my-god-mode-update-cursor-color)
-#+end_src
-** Repeat mode
-#+begin_src emacs-lisp
-(repeat-mode 1)
-#+end_src
 * Minibuffer
 ** Ivy for minibuffer completions
 #+begin_src emacs-lisp
-      ;; minibuffer completions
-      (use-package ivy
-        :ensure t
-        :config
-        (ivy-mode 1)
-        (setq ivy-use-virtual-buffers t)
-        (setq ivy-count-format "(%d/%d) ")
-        :bind
-        (("C-x b" . 'ivy-switch-buffer)
-         ("C-c C-r" . 'ivy-resume)
-         ("C-c t" . 'counsel-load-theme)))
+  (use-package ivy
+    :ensure t
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) ")
+    :bind
+    (("C-x b" . 'ivy-switch-buffer)
+     ("C-c C-r" . 'ivy-resume)
+     ("C-c t" . 'counsel-load-theme)
+     ("M-y" . 'counsel-yank-pop)))
 #+end_src
 ** Consel for find file and related completions
 #+begin_src emacs-lisp
@@ -145,11 +83,24 @@ When the cursor is RED then god-mode is active, else its purple
     :bind
     (("M-x" . 'counsel-M-x)
      ("C-x C-f" . 'counsel-find-file)))
-    ;; :config
-    ;; (setq ivy-initial-inputs-alist nil))
+#+end_src
+** Swiper for advances search
+#+begin_src emacs-lisp
+  (use-package swiper
+    :bind
+    (("C-c s" . 'swiper-isearch)))
 #+end_src
 
 * Dired / File Management
+** Symlink management
+#+begin_src emacs-lisp
+(setq find-file-visit-truename t)
+#+end_src
+** use iBuffer instead of default buffer
+iBuffer is just an improvised version of buffer
+#+begin_src emacs-lisp
+(defalias 'list-buffers 'ibuffer)
+#+end_src
 ** File backups
 #+begin_src emacs-lisp
   ;; disable emacs to automatically save files
@@ -211,8 +162,9 @@ When the cursor is RED then god-mode is active, else its purple
 * Fonts
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil :font "Iosevka" :height 150)
+  (set-face-attribute 'variable-pitch nil :font "Iosevka" :height 150)
+  (set-face-attribute 'fixed-pitch nil :font "Iosevka" :height 150)
 #+end_src
-
 * Progaramming
 ** General settings
 #+begin_src emacs-lisp
@@ -239,11 +191,11 @@ When the cursor is RED then god-mode is active, else its purple
 #+begin_src emacs-lisp
   ;; c-style comments
   (setq-default c-basic-offset 4
-        c-default-style '((java-mode . "java")
-                  (awk-mode . "awk")))
+    c-default-style '((java-mode . "java")
+          (awk-mode . "awk")))
   (add-hook 'c-mode-hook (lambda ()
-               (interactive)
-               (c-toggle-comment-style -1)))
+           (interactive)
+           (c-toggle-comment-style -1)))
 #+end_src
 
 ** Markdown
@@ -255,10 +207,10 @@ When the cursor is RED then god-mode is active, else its purple
     (setq markdown-command "marked")
     (defun  set-markdown-header-font-sizes ()
       (dolist (face '((markdown-header-face-1 . 1.2)
-              (markdown-header-face-2 . 1.1)
-              (markdown-header-face-3 . 1.0)
-              (markdown-header-face-4 . 1.0)
-              (markdown-header-face-5 . 1.0)))
+          (markdown-header-face-2 . 1.1)
+          (markdown-header-face-3 . 1.0)
+          (markdown-header-face-4 . 1.0)
+          (markdown-header-face-5 . 1.0)))
     (set-face-attribute (car face) nil :weight 'normal :height (cdr face))))
     (defun mardown-mode-hook ()
       (set-markdown-header-font-sizes))
@@ -269,14 +221,88 @@ When the cursor is RED then god-mode is active, else its purple
 * Unbind nuisance keybindings
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-x C-z") nil)    ;; disable (supend-frame) command. Very annoying at times
-  ;; (global-set-key (kbd "C-z") nil)        ;; (suspend-frame) also bound to this combination
+  (global-set-key (kbd "C-z") nil)        ;; (suspend-frame) also bound to this combination
 #+end_src
 
 * Theme
 #+begin_src emacs-lisp
-  (load-theme 'doom-palenight t)            ;; main theme
+  (require-theme 'modus-themes)
+  (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
+  (setq modus-themes-common-palette-overrides
+        '((border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)
+          (cursor "#dcd0ff")
+          (bg-mode-line-active bg-lavender)
+          (border-mode-line-active bg-lavender)
+          (bg-mode-line-inactive bg-dim)
+          (border-mode-line-inactive bg-inactive)))
+  (load-theme 'modus-vivendi t)
 #+end_src
 
+* Reducing RSI
+** God-Mode
+*** Disable function key modificaiton by GOD-MODE
+#+begin_src emacs-lisp
+(setq god-mode-enable-function-key-translation nil)
+#+end_src
+*** Enable GOD-MODE and setup toggle globally
+#+begin_src emacs-lisp
+  (use-package god-mode
+    :ensure t)
+  (global-set-key (kbd "C-c i") #'god-mode-all)
+#+end_src
+*** Visual indication when god-local-mode is active
+#+begin_src emacs-lisp
+  ;; first load the themes cursor-color
+  (setq background-cursor-color (face-background 'cursor nil 'default))
+
+  (defun my-god-mode-update-cursor-color ()
+    "this function will change the cursor-color to red when god-local-mode is active, if not then cursor-color will be set back to themes default color"
+    (if (or god-local-mode)
+    (set-cursor-color "#e06666")
+      (set-cursor-color background-cursor-color)))
+
+  (add-hook 'post-command-hook #'my-god-mode-update-cursor-color)
+#+end_src
+
+*** Configuration for overwrite mode in GOD-MODE
+#+begin_src emacs-lisp
+(defun my-god-mode-toggle-on-overwrite ()
+    "Toggle god-mode on overwrite-mode."
+    (if (bound-and-true-p overwrite-mode)
+    (god-local-mode-pause)
+      (god-local-mode-resume)))
+
+  (add-hook 'overwrite-mode-hook #'my-god-mode-toggle-on-overwrite)
+#+end_src
+*** Toggle isearch in GOD-MODE as well
+#+begin_src emacs-lisp
+  (require 'god-mode-isearch)
+  (define-key isearch-mode-map (kbd "C-c i") #'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "C-c i") #'god-mode-isearch-disable)
+#+end_src
+*** Toggle god-local-mode using the "i" key
+#+begin_src emacs-lisp
+  (define-key god-local-mode-map (kbd "i") #'god-local-mode)
+#+end_src
+*** Configure keybindings for windows navigation while in GOD-MODE
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-1") #'delete-other-windows)
+  (global-set-key (kbd "C-x C-2") #'split-window-below)
+  (global-set-key (kbd "C-x C-3") #'split-window-right)
+  (global-set-key (kbd "C-x C-0") #'delete-window)
+
+  (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+  (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+#+end_src
+*** Disable GOD-MODE while in Dired-Mode
+#+begin_src emacs-lisp
+  (add-to-list 'god-exempt-major-modes '(dired-mode compilation-mode))
+#+end_src
+** Repeat mode
+#+begin_src emacs-lisp
+(repeat-mode 1)
+#+end_src
 * Scrolling
 #+begin_src emacs-lisp
   (setq scroll-preserve-screen-position t) ;; preserve scrolling position
@@ -294,11 +320,16 @@ When the cursor is RED then god-mode is active, else its purple
 
   (save-place-mode 1)                     ;; restore last cursor location
 
-  (when (or (eq system-type 'gnu/linux) (eq system-type 'windows-nt))
-    (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up with point
-    (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v")))   ;; scroll down with point
 #+end_src
-
+** Scrolling with point fixed on the screen
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-<down>") (kbd "C-u 1 C-v")) ;; scroll up with point
+  (global-set-key (kbd "C-<up>") (kbd "C-u 1 M-v"))   ;; scroll down with point
+#+end_src
+** Smooth scrolling with touchpad / mouse
+#+begin_src emacs-lisp
+  pixel-scroll-precision-mode
+#+end_src
 * Org-mode
 ** org-mode
 #+begin_src emacs-lisp
@@ -311,6 +342,9 @@ When the cursor is RED then god-mode is active, else its purple
       org-habit
       org-bookmark
       org-eshell))
+
+  ;; maintain same syntax hightlighting in org-mode src blocks as in major mode editing buffers
+  (setq org-src-fontify-natively t)
 
   (use-package org
     :hook (org-mode . org-mode-setup)
@@ -327,6 +361,10 @@ When the cursor is RED then god-mode is active, else its purple
     :hook (org-mode . org-bullets-mode)
     :custom
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+#+end_src
+*** All headings folded
+#+begin_src emacs-lisp
+(setq org-startup-folded t)
 #+end_src
 ** org-babel
 #+begin_src emacs-lisp
@@ -381,10 +419,10 @@ When the cursor is RED then god-mode is active, else its purple
   ;; Automatically tangle our Emacs.org config file when we save it
   (defun org-babel-tangle-config ()
     (when (string-equal (buffer-file-name)
-                        (expand-file-name "~/.emacs.d/init.org"))
+            (expand-file-name "~/.emacs.d/init.org"))
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
-        (org-babel-tangle))))
+    (org-babel-tangle))))
 
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
 #+end_src
@@ -402,8 +440,8 @@ When the cursor is RED then god-mode is active, else its purple
     :init
     (projectile-mode +1)
     :bind (:map projectile-mode-map
-                ("s-p" . projectile-command-map)
-                ("C-c p" . projectile-command-map)))
+        ("s-p" . projectile-command-map)
+        ("C-c p" . projectile-command-map)))
 
   ;; add space separated list, projectile will recursively search though each of the projects under these folders
   (setq projectile-project-search-path '("~/programming/" "~/projects/"))
@@ -413,9 +451,37 @@ When the cursor is RED then god-mode is active, else its purple
   (use-package ripgrep
     :ensure t)
 #+end_src
-
+*** Show indents
+#+begin_src emacs-lisp
+  (use-package highlight-indent-guides
+    :ensure t
+    :defer t
+    :hook (prog-mode . highlight-indent-guides-mode)
+    :config
+    (setq highlight-indent-guides-method 'character)
+    (setq highlight-indent-guides-character ?\|)
+    (setq highlight-indent-guides-responsive 'top))
+#+end_src
+*** Eglot
+LSP for EMACS
+#+begin_src emacs-lisp
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+    '((c-mode c++-mode)
+      . ("clangd"
+     "-j=8"
+     "--log=error"
+     "--malloc-trim"
+     "--clang-tidy"
+     "--cross-file-rename"
+     "--completion-style=detailed"
+     "--pch-storage=memory"
+     "--header-insertion=never"
+     "--header-insertion-decorators=0"))))
+  (add-hook 'c-mode-hook #'eglot-ensure)
+  (setq eglot-autoshutdown t)             ;; shutdown eglot when all buffers of a mode is closed
+#+end_src
 * External Packages
-
 ** Async mode
 #+begin_src emacs-lisp
   (use-package async
@@ -455,6 +521,30 @@ When the cursor is RED then god-mode is active, else its purple
     (global-set-key (kbd "M-p") 'move-text-up)
     (global-set-key (kbd "M-n") 'move-text-down))
 #+end_src
+** Display hex color when hex color-codes are used in buffer
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :ensure t
+    :init
+    (add-hook 'prog-mode-hook 'rainbow-mode))
+#+end_src
+** Rainbow delimeters
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+#+end_src
+** Pulsar
+#+begin_src emacs-lisp
+  (require 'pulsar)
+  (setq pulsar-pulse t)
+  (setq pulsar-delay 0.055)
+  (setq pulsar-iterations 10)
+  (setq pulsar-face 'pulsar-magenta)
+  (add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
+  (pulsar-global-mode)
+#+end_src
 * Encryption
 #+begin_src emacs-lisp :tangel yes
   ;; automatic encryption and decryption for gpg encrypted files
@@ -463,4 +553,43 @@ When the cursor is RED then god-mode is active, else its purple
 
   ;; allowing for password prompt in minibuffer
   (setq epa-pinentry-mode 'loopback)
+#+end_src
+* Functions
+** Add 1 to an int
+#+begin_src emacs-lisp
+  (defun increment-integer ()
+    "Increment the integer at point by 1."
+    (interactive)
+    (skip-chars-backwards "0123456789")
+    (or (looking-at "[0-9]+")
+    (error "No integer at point"))
+    (replace-match
+     (number-to-string
+      (1+
+       (string-to-number
+    (match-string 0))))))
+
+  (global-set-key (kbd "C-c +") 'increment-integer)
+#+end_src
+* Visit and referesh config file
+#+begin_src emacs-lisp
+  (defun config-visit ()
+     (interactive)
+     (find-file "~/.dotfiles/.emacs.d/init.org"))
+  (global-set-key (kbd "C-c e") 'config-visit)
+  (defun config-reload ()
+    "Reload ~/.dotfiles/.emacs.d/init.org at runtime"
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.dotfiles/.emacs.d/init.org")))
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+end_src
+* Diminish
+#+begin_src emacs-lisp
+  (require 'diminish)
+  (diminish 'company-mode)
+  (diminish 'org-mode)
+  (diminish 'ivy-mode)
+  (diminish 'projectile-mode)
+  (diminish 'rainbow-mode)
+  (diminish 'abbrev-mode)
 #+end_src
