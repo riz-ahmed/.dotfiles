@@ -42,10 +42,6 @@ start_emacs() {
 
 start_emacs
 
-# emacsclient
-alias eo='emacsclient -cnqu'
-alias seo='sudo emacsclient -cnqu'
-
 # prompt
 setopt autocd		# automatically cd into typed direcorty
 PS1="%B%F{red}[%F{yellow}%n%F{green}@%F{blue}%M%F{magenta}%~%F{red}]%f%b "
@@ -53,8 +49,25 @@ PS2="%B%F{blue}>>>%f%b "
 stty stop undef		# disable ctrl-s to avoid terminal freezing
 setopt interactive_comments
 
-# colored GCC errors and warnings
+# colorised output
+# 1. colored GCC errors and warnings
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01'
+
+# 2. colorised gitdiff using bat
+batdiff() {
+    git diff --name-only --relative --diff-filter=d | xargs bat --diff
+}
+
+# 3. colorised man pages
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANROFFOPT="-c"          # due to formatting problems with man pages
+
+# 4. colorised --help
+alias bathelp='bat --plain --language=help'
+
+# config only for zsh
+alias -g -- -h='-h 2>&1 | bat --language=help --style=plain'
+alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
 
 # tell fzf to use ripgrep
 if type rg &> /dev/null; then				# if ripgrep exists
@@ -63,12 +76,12 @@ if type rg &> /dev/null; then				# if ripgrep exists
 fi
 
 # setting defualt editor (nvim)
-export EDITOR=eo
-export VISUAL=eo
+export EDITOR='emacsclient -cnqu'
+export VISUAL='emacsclient -cnqu'
 export BROWSER="$(which firefox)"
 export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
 # viman () { text=$(man "$@") && echo "$text" | vim -R +":set ft=man" - ; }
-export MANPAGER="sh -c 'col -bx | batcat -l man -p'"
+
 
 # load aliases
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"

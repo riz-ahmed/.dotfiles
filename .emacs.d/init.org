@@ -394,10 +394,10 @@ iBuffer is just an improvised version of buffer
     (org-roam-directory "~/Notes/org-roam-notes")
     (org-roam-completion-everywhere t)
     :bind (("C-c n l" . org-roam-buffer-toggle)
-       ("C-c n f" . org-roam-node-find)
-       ("C-c n i" . org-roam-node-insert)
-       :map org-mode-map
-       ("C-M-i"    . completion-at-point))
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i"    . completion-at-point))
     :config
     (org-roam-setup))
 
@@ -440,7 +440,7 @@ iBuffer is just an improvised version of buffer
     :init
     (projectile-mode +1)
     :bind (:map projectile-mode-map
-        ("s-p" . projectile-command-map)
+        ;; ("s-p" . projectile-command-map)
         ("C-c p" . projectile-command-map)))
 
   ;; add space separated list, projectile will recursively search though each of the projects under these folders

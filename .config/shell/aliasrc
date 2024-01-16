@@ -1,0 +1,8 @@
+alias ll='ls -la'   \
+      l1='ls -1'    \
+
+
+# custome shortcuts
+alias z='zathura'
+alias eo='emacsclient -cnqu'
+alias seo='sudo emacsclient -cnqu'
