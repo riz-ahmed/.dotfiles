@@ -227,6 +227,8 @@ iBuffer is just an improvised version of buffer
 * Theme
 #+begin_src emacs-lisp
   (require-theme 'modus-themes)
+  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-bold-constructs nil)
   (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
   (setq modus-themes-common-palette-overrides
         '((border-mode-line-active unspecified)
@@ -235,7 +237,9 @@ iBuffer is just an improvised version of buffer
           (bg-mode-line-active bg-lavender)
           (border-mode-line-active bg-lavender)
           (bg-mode-line-inactive bg-dim)
-          (border-mode-line-inactive bg-inactive)))
+          (border-mode-line-inactive bg-inactive)
+          (comment yellow-cooler)
+          (string green-warmer)))
   (load-theme 'modus-vivendi t)
 #+end_src
 

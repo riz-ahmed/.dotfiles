@@ -24,3 +24,5 @@ Just download passmenu - a dmenu script from the password-store website, make th
 ** Colorised output in terminal
 download bat command and go through all the configurations given over there
 https://github.com/sharkdp/bat
+* Interesting TUI programs
+** https://github.com/d99kris/nchat - TUI client for Telegram and WhatsApp

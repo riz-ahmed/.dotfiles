@@ -1,0 +1,11 @@
+[alias]
+    st = status
+    ci = commit
+    br = branch
+    df = diff
+    lg = log --name-status
+    who = shortlog -s --
+    sc = show --name-status
+[user]
+    name = rizwan ahmed
+    email = rzwn.hmd@gmail.com

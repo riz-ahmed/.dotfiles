@@ -3,6 +3,7 @@
 - Copied stuff from here and there
 
 * Requirements
+- Emacs (29 or higher)
 - Alacritty
 - git
 - Neovim
