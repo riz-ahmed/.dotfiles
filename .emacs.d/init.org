@@ -161,9 +161,9 @@ iBuffer is just an improvised version of buffer
 
 * Fonts
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka" :height 150)
-  (set-face-attribute 'variable-pitch nil :font "Iosevka" :height 150)
-  (set-face-attribute 'fixed-pitch nil :font "Iosevka" :height 150)
+  (set-face-attribute 'default nil :font "Iosevka" :height 160)
+  (set-face-attribute 'variable-pitch nil :font "Iosevka" :height 160)
+  (set-face-attribute 'fixed-pitch nil :font "Iosevka" :height 160)
 #+end_src
 * Progaramming
 ** General settings
@@ -306,6 +306,13 @@ iBuffer is just an improvised version of buffer
 ** Repeat mode
 #+begin_src emacs-lisp
 (repeat-mode 1)
+#+end_src
+#+begin_src emacs-lisp
+  (when (eq system-type 'darwin)
+    (unless (package-installed-p 'devil)
+    (package-install 'devil))
+  (global-devil-mode)
+  (global-set-key (kbd "C-,") 'global-devil-mode))
 #+end_src
 * Scrolling
 #+begin_src emacs-lisp
