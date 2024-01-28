@@ -6,7 +6,6 @@
 - Emacs (29 or higher)
 - Alacritty
 - git
-- Neovim
 - i3 (Tiling Windows Manager)
 - QuteBrowser
 - tmux
@@ -16,8 +15,8 @@
 - zsh (shell)
 
 * Terminal Driven Workflow
-- I am primarily using Emacs as my daily driver for all of my development, notetaking and various other tasks
-- VIM / Neovim is almost never used and no effort is taken really to maintain them
+- I use Emacs as my main text editor for all of my development, notetaking and managing git repos
+- Vim is just used for emergency editing and doesn't really have all those cool features
 
 * Quick Start
 #+begin_src shell
@@ -28,7 +27,7 @@
 - I am using stow to manage my dotfiles locally =stow .=
 
 * Start kmonad service
-- Copy =kmonad.service= to =/usr/lib/systemd/system=
+- Copy =kmonad.service= from .config/kmonad to =/usr/lib/systemd/system=
 - Enable it as a systemd service
 #+begin_src shell
   sudo systemctl daemon-reload

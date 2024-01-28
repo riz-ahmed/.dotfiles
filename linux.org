@@ -1,3 +1,6 @@
+* Links
+- refer to Arch package directory
+  https://archlinux.org/packages/
 * Configuration
 ** Making systemwide fonts to Iosevka
 This can be done using font configuration files
