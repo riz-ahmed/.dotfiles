@@ -35,3 +35,4 @@ chsh -s $(which zsh)
 yay -S powershell-bin
 sudo pacman -Syu qutebrowser
 yay -S pass-update
+sudo pacman -S net-tools

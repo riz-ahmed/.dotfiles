@@ -6,3 +6,7 @@ alias ll='ls -la'   \
 alias z='zathura'
 alias eo='emacsclient -cnqu'
 alias seo='sudo emacsclient -cnqu'
+
+# package manager shortcuts
+alias install='sudo pacman -S'
+alias search='pacman -Ss'
