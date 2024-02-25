@@ -35,8 +35,6 @@ start_emacs() {
     if ! pgrep -x "emacs" > /dev/null; then
         echo "starting emacs daemon..."
         emacs --daemon
-    else
-        echo "emacs daemon already running!"
     fi
 }
 
@@ -112,3 +110,6 @@ autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
 
 # set us-keyboard as default
 setxkbmap -layout us
+
+# path variable
+PATH=$HOME/.local/bin:$PATH

@@ -26,16 +26,15 @@ set hidden			"vim won't prompt for saving files when switching buffers
 syntax on 			"syntax highlighting
 
 "set tabstops
-set tabstop=8			"industry standard 8 char tabs
+set tabstop=4			"industry standard 8 char tabs
 set shiftwidth=4		"standard 4 char indentation
 
-set clipboard=unnamed		"copies / pasters from the clipboard
-set clipboard=unnamedplus	"copies / pasters from the clipboard
+set clipboard^=unnamed,unnamedplus		"copies / pasters from the clipboard
 
 "settings for netrw
 let g:netrw_winsize=20		"window width
 
-colorscheme slate		"default colorscheme
+colorscheme pablo		"default colorscheme
 
 "airline (statusline) settings
 let g:airline_theme='base16'

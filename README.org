@@ -6,17 +6,17 @@
 - Emacs (29 or higher)
 - Alacritty
 - git
-- i3 (Tiling Windows Manager)
+- DWM (Tiling Windows Manager)
 - QuteBrowser
+- Firefox
 - tmux
 - VIM
+- NVIM
 - zathura
 - zathura-pdf-mupdf
 - zsh (shell)
 
 * Terminal Driven Workflow
-- I use Emacs as my main text editor for all of my development, notetaking and managing git repos
-- Vim is just used for emergency editing and doesn't really have all those cool features
 
 * Quick Start
 #+begin_src shell
