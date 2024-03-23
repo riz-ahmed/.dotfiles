@@ -74,7 +74,7 @@ if type rg &> /dev/null; then				# if ripgrep exists
 fi
 
 # setting defualt editor (nvim)
-export EDITOR='emacsclient -cnqu'
+export EDITOR='$(which nvim)'
 export VISUAL='emacsclient -cnqu'
 export BROWSER="$(which firefox)"
 export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
@@ -113,3 +113,9 @@ setxkbmap -layout us
 
 # path variable
 PATH=$HOME/.local/bin:$PATH
+
+# add zoxide binary
+eval "$(zoxide init zsh)"
+
+# add brew package manager to PATH
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"

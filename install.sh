@@ -36,3 +36,11 @@ yay -S powershell-bin
 sudo pacman -Syu qutebrowser
 yay -S pass-update
 sudo pacman -S net-tools
+pacman -S tlp tlp-rdw       # battery managemen
+systemctl enable tlp.service    # start the service
+systemctl enable NetworkManager-dispatcher.service  # start service for radio devices
+systemctl mask systemd-rfkill.service systemd-rfkill.socket # this service has to be masked for the tlp serive to work properly
+git clone https://github.com/AdnanHodzic/auto-cpufreq.git   # maintinc cpu-frequency
+cd auto-cpufreq && sudo ./auto-cpufreq-installer
+sudo pacman -Syu zoxide
+sudo pacman -Syu exa
