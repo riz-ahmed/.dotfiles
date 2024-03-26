@@ -54,5 +54,20 @@ map("n", "<leader>ud", function() Util.toggle.diagnostics() end, { desc = "Toggl
 map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 
 -- reducing RSI
-map("n", "<Leader>w", ":w<CR>")
 map("n", "<Leader>uc", "gU")
+map("n", "<Leader>lc", "gu")
+
+map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location List" })
+map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
+
+map("n", "[q", vim.cmd.cprev, { desc = "Previous quickfix" })
+map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
+
+-- quit
+map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
+
+-- easier window navigation
+map("n", "<leader>ww", "<C-W>p", { desc = "Other window", remap = true })
+map("n", "<leader>wq", "<C-W>c", { desc = "Delete window", remap = true })
+map("n", "<leader>ws", "<C-W>s", { desc = "Split window below", remap = true })
+map("n", "<leader>wv", "<C-W>v", { desc = "Split window right", remap = true })
