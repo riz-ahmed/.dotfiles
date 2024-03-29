@@ -41,6 +41,10 @@ map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
+-- navigation
+map("n", "<C-d>", "<C-d>zz", {desc = "scroll half page down"})
+map("n", "<C-u>", "<C-u>zz", {desc = "scroll half page up"})
+
 -- formatting
 map({ "n", "v" }, "<leader>cf", function()
   Util.format({ force = true })
