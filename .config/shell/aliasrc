@@ -23,6 +23,7 @@ alias em='emacs'
 alias emn='emacs -nw'
 alias ec='emacsclient -cnqu'
 alias sec='sudo emacsclient -cnqu'
+alias tx='tmux'
 
 # exa shortcuts
 alias es='exa --group-directories-first --icons'

@@ -13,7 +13,7 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:FiraCode Nerd Font 12
+font pango:Iosevka Term 12
 
 # hide window title bar as well as pixel for adding borders and colors
 for_window [class="^.*"] border pixel 3
@@ -54,7 +54,7 @@ floating_modifier $mod
 
 # move tiling windows via drag & drop by left-clicking into the title bar,
 # or left-clicking anywhere into the window while holding the floating modifier.
-tiling_drag modifier titlebar
+# tiling_drag modifier titlebar
 
 # start a terminal
 bindsym $mod+Return exec alacritty
@@ -233,9 +233,8 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        position top
         status_command i3status
-        tray_output primary
+        # tray_output primary
 }
 
 # screenshots in files
@@ -250,4 +249,4 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 exec_always --no-startup-id feh --bg-scale --no-xinerama $HOME/Downloads/archlinux_bg.jpg
 
 # start picom for window effects
-exec --no-startup-id picom --no-vsync
+# exec --no-startup-id picom --no-vsync
