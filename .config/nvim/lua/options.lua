@@ -16,6 +16,7 @@ augroup netrw_mapping
 augroup END
 ]])
 
+vim.cmd([[colorscheme habamax]])
 
 local opt = vim.opt
 
