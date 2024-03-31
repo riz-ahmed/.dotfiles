@@ -15,6 +15,8 @@
     (setq use-package-always-ensure t
       use-package-expand-minimally t))
 
+  ;; manually added plugins
+  (add-to-list 'load-path "~/.emacs.d/plugins/")
 #+end_src
 
 * Basic Configuration
@@ -226,21 +228,23 @@ iBuffer is just an improvised version of buffer
 
 * Theme
 #+begin_src emacs-lisp
-  (require-theme 'modus-themes)
-  (setq modus-themes-italic-constructs t)
-  (setq modus-themes-bold-constructs nil)
-  (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
-  (setq modus-themes-common-palette-overrides
-        '((border-mode-line-active unspecified)
-          (border-mode-line-inactive unspecified)
-          (cursor "#dcd0ff")
-          (bg-mode-line-active bg-lavender)
-          (border-mode-line-active bg-lavender)
-          (bg-mode-line-inactive bg-dim)
-          (border-mode-line-inactive bg-inactive)
-          (comment yellow-cooler)
-          (string green-warmer)))
-  (load-theme 'modus-vivendi t)
+  ;; (require 'modus-vivendi-theme)
+  ;; (setq modus-themes-italic-constructs t)
+  ;; (setq modus-themes-common-palette-overrides modus-themes-preset-overrides-faint)
+  ;; (setq modus-themes-bold-constructs nil)
+  ;; (setq modus-themes-common-palette-overrides
+  ;;       '((border-mode-line-active unspecified)
+  ;;         (border-mode-line-inactive unspecified)
+  ;;         (cursor "#dcd0ff")
+  ;;         (bg-mode-line-active bg-lavender)
+  ;;         (border-mode-line-active bg-lavender)
+  ;;         (bg-mode-line-inactive bg-dim)
+  ;;         (border-mode-line-inactive bg-inactive)
+  ;;         (comment yellow-cooler)
+  ;;         (string green-warmer)))
+  ;; (load-theme 'modus-vivendi t)
+
+  (load-theme 'tsdh-dark t)
 #+end_src
 
 * Reducing RSI
@@ -251,9 +255,9 @@ iBuffer is just an improvised version of buffer
 #+end_src
 *** Enable GOD-MODE and setup toggle globally
 #+begin_src emacs-lisp
-  (use-package god-mode
-    :ensure t)
-  (global-set-key (kbd "C-c i") #'god-mode-all)
+  (add-to-list 'load-path "~/.emacs.d/plugins/god-mode")
+  (require 'god-mode)
+  (global-set-key (kbd "<escape>") #'god-mode-all)
 #+end_src
 *** Visual indication when god-local-mode is active
 #+begin_src emacs-lisp
@@ -282,8 +286,8 @@ iBuffer is just an improvised version of buffer
 *** Toggle isearch in GOD-MODE as well
 #+begin_src emacs-lisp
   (require 'god-mode-isearch)
-  (define-key isearch-mode-map (kbd "C-c i") #'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "C-c i") #'god-mode-isearch-disable)
+  (define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
 #+end_src
 *** Toggle god-local-mode using the "i" key
 #+begin_src emacs-lisp
@@ -303,6 +307,10 @@ iBuffer is just an improvised version of buffer
 #+begin_src emacs-lisp
   (add-to-list 'god-exempt-major-modes '(dired-mode compilation-mode))
 #+end_src
+*** Set h as the meta key in god-mode
+#+begin_src emacs-lisp
+  (setq god-mode-alist '((nil . "C-") ("h" . "M-") ("H" . "C-M-")))
+#+end_src
 ** Repeat mode
 #+begin_src emacs-lisp
 (repeat-mode 1)
@@ -313,6 +321,13 @@ iBuffer is just an improvised version of buffer
     (package-install 'devil))
   (global-devil-mode)
   (global-set-key (kbd "C-,") 'global-devil-mode))
+#+end_src
+** Keychord
+used to map 'jk' to <escape>
+#+begin_src emacs-lisp
+  (require 'key-chord)
+  (key-chord-mode 1)
+  (key-chord-define-global "jk" 'god-local-mode)
 #+end_src
 * Scrolling
 #+begin_src emacs-lisp
