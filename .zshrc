@@ -10,7 +10,15 @@ zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format "Completing %d"
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' menu select=2
-eval "$(dircolors -b)"
+if whence dircolors >/dev/null; then
+  eval "$(dircolors -b)"
+  zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+  alias ls='ls --color'
+else
+  export CLICOLOR=1
+  zstyle ':completion:*:default' list-colors ''
+fi
+# eval "$(dircolors -b)"
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
@@ -109,7 +117,7 @@ autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # set us-keyboard as default
-setxkbmap -layout us
+# setxkbmap -layout us
 
 # path variable
 PATH=$HOME/.local/bin:$PATH
@@ -118,4 +126,4 @@ PATH=$HOME/.local/bin:$PATH
 eval "$(zoxide init zsh)"
 
 # add brew package manager to PATH
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
