@@ -5,12 +5,6 @@ alias ll='ls -la'   \
 # custome shortcuts
 alias zt='zathura'
 
-# package manager shortcuts
-alias install='sudo pacman -S'
-alias search='pacman -Ss'
-alias update='sudo pacman -Syyu'
-alias remove='sudo pacman -Runs'
-
 # alias for easy editing and loading
 alias ezh='nvim $HOME/.zshrc'
 alias eza='nvim $HOME/.config/shell/aliasrc'
@@ -30,6 +24,3 @@ alias es='exa --group-directories-first --icons'
 alias ell='exa --group-directories-first --icons -l -a'
 alias eil='exa --group-directories-first --icons -l -a -i'
 alias ed='exa -D'
-
-# helix
-hx='helix'
