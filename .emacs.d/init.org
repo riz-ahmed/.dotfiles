@@ -14,9 +14,6 @@
   (eval-and-compile
     (setq use-package-always-ensure t
       use-package-expand-minimally t))
-
-  ;; manually added plugins
-  (add-to-list 'load-path "~/.emacs.d/plugins/")
 #+end_src
 
 * Basic Configuration
@@ -325,9 +322,19 @@ iBuffer is just an improvised version of buffer
 ** Keychord
 used to map 'jk' to <escape>
 #+begin_src emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/plugins/key-chord")
   (require 'key-chord)
   (key-chord-mode 1)
-  (key-chord-define-global "jk" 'god-local-mode)
+  (key-chord-define-global "jk" 'god-mode-all)
+#+end_src
+** Mapping CMD as Meta on Mac
+#+begin_src emacs-lisp
+  (when (eq system-type 'darwin)
+    (setq mac-command-modifier       'meta
+        mac-option-modifier         nil
+        mac-control-modifier       'control
+        mac-right-command-modifier 'super
+        mac-right-control-modifier 'hyper))
 #+end_src
 * Scrolling
 #+begin_src emacs-lisp
