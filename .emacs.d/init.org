@@ -50,7 +50,7 @@
   (show-paren-mode 1)
   (setq visible-bell t)
     (setq use-dialog-box nil)               ;; diasable UI pop-up to keep fully keyboard driven
-    ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized)) ;; start emacs in fullscreen
+    (add-to-list 'initial-frame-alist '(fullscreen . maximized)) ;; start emacs in fullscreen
 #+end_src
 
 ** Display shell properly
