@@ -67,7 +67,7 @@ batdiff() {
 # 3. colorised man pages
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 # export MANROFFOPT="-c"          # due to formatting problems with man pages
-alias man='batman'
+#
 
 # 4. colorised --help
 alias bathelp='bat --plain --language=help'
@@ -86,7 +86,7 @@ fi
 export EDITOR='$(which nvim)'
 export VISUAL='emacsclient -cnqu'
 export BROWSER="$(which firefox)"
-export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
+# export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
 # viman () { text=$(man "$@") && echo "$text" | vim -R +":set ft=man" - ; }
 
 

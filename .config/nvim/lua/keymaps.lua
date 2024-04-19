@@ -1,6 +1,6 @@
 local map = vim.keymap.set
 
-map("n", "<Leader>e", ":E<CR>", { desc = "NetRw" })
+map("n", "<Leader>e", ":Lex<CR>", { desc = "NetRw" })
 map("n", "<Leader>y", '"+y', { desc = "clipboard yank" })
 map("n", "<Leader>p", '"+p', { desc = "clipboard paste" })
 
