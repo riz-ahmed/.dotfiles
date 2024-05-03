@@ -46,7 +46,7 @@ start_emacs() {
     fi
 }
 
-start_emacs
+# start_emacs
 
 # prompt
 setopt autocd		# automatically cd into typed direcorty
@@ -83,8 +83,9 @@ if type rg &> /dev/null; then				# if ripgrep exists
 fi
 
 # setting defualt editor (nvim)
-export EDITOR='$(which nvim)'
-export VISUAL='emacsclient -cnqu'
+export EDITOR='$(which hx)'
+# export VISUAL='emacsclient -cnqu'
+export VISUAL='$(which hx)'
 export BROWSER="$(which firefox)"
 # export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
 # viman () { text=$(man "$@") && echo "$text" | vim -R +":set ft=man" - ; }
@@ -93,15 +94,8 @@ export BROWSER="$(which firefox)"
 # load aliases
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
 
-# mail settings
-set -o mailwarn
-
 # browsing through the current directory
 fcd(){cd $(ls | fzf)}
-
-# aliases
-alias cpy="xclip -selection -c" \
-      h="history | cut -c 8- | sort | uniq | fzf | tr '\\n' ' ' | cpy"  \
 
 # histroy control
 HISTCONTROL=ignorespace:ignoredups
@@ -117,14 +111,8 @@ autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# set us-keyboard as default
-# setxkbmap -layout us
-
 # path variable
 PATH=$HOME/.local/bin:$PATH
 
 # add zoxide binary
 eval "$(zoxide init zsh)"
-
-# add brew package manager to PATH
-# eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
