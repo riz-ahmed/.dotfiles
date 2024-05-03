@@ -1,0 +1,59 @@
+theme = "catppuccin_mocha"
+
+[keys.insert]
+esc = ["collapse_selection", "normal_mode"]
+
+[editor]
+line-number = "relative"
+true-color = true
+undercurl = true
+text-width = 120
+scroll-lines = 5
+color-modes = true
+insert-final-newline = false
+shell = ["zsh", "-c"]
+scrolloff = 10
+
+[editor.indent-guides]
+render = true
+skip-levels = 0
+
+[editor.soft-wrap]
+enable = true
+wrap-indicator = ""
+
+[keys.insert.j]
+k = "normal_mode" # Maps `jk` to exit insert mode
+
+[keys.normal]
+C-p = ["move_line_up", "scroll_up"]
+C-n = ["move_line_down", "scroll_down"]
+"C-d" = ["half_page_down", "goto_window_center"]
+"C-u" = ["half_page_up", "goto_window_center"]
+# muscle memeory from VIM
+"{" = ["goto_prev_paragraph"]
+"}" = ["goto_next_paragraph"]
+V = ["select_mode", "extend_to_line_bounds"]
+C = ["extend_to_line_end", "yank_main_selection_to_clipboard", "change_selection"]
+D = ["extend_to_line_end", "yank_main_selection_to_clipboard", "delete_selection"]
+i = ["insert_mode", "collapse_selection"]
+a = ["append_mode", "collapse_selection"]
+esc = ["collapse_selection", "keep_primary_selection"]
+
+[keys.select]
+"{" = ["extend_to_line_bounds", "goto_prev_paragraph"]
+"}" = ["extend_to_line_bounds", "goto_next_paragraph"]
+# visual mode specific muscle memory
+i = "select_textobject_inner"
+a = "select_textobject_around"
+esc = ["collapse_selection", "keep_primary_selection", "normal_mode"]
+
+[editor.lsp]
+display-inlay-hints = true
+
+[editor.auto-pairs]
+'(' = ')'
+'{' = '}'
+'[' = ']'
+'"' = '"'
+'<' = '>'
