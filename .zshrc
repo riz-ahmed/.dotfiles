@@ -1,10 +1,6 @@
-#!/usr/bin/zsh
-
+# use modern zsh completion system
 autoload -U colors && colors
 
-# use modern zsh completion system
-autoload -Uz compinit && compinit
-compinit
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format "Completing %d"
@@ -33,26 +29,38 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 # case insensitive path-completion 
 zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 
 
+setopt autocd		# automatically cd into typed direcorty
+
+# append path
+PATH=$HOME/.local/bin:$PATH
+PATH=$HOME/Library/Python/3.9/bin:$PATH # to set the latest pip in path
+
+# aliases
+alias diff="diff --color=auto"
+alias grep="grep --color=auto"
+alias ezsh='nvim $HOME/.zshrc'
+alias man='batman'
+alias nv='nvim'
+alias ls='eza --icons=always'
+alias ll='eza --icons=always -la'
+alias rsync="rsync -a --info=progress2"
+alias so='source $HOME/.zshrc'
+
 # EMACS keybindings
 autoload -Uz select-word-style  # M navitagation just like in Emacs
 select-word-style bash
 bindkey -e
 
-# emacs daemon
-start_emacs() {
-    if ! pgrep -x "emacs" > /dev/null; then
-        echo "starting emacs daemon..."
-        emacs --daemon
-    fi
-}
-
-# start_emacs
-
 # prompt
-setopt autocd		# automatically cd into typed direcorty
-PS1="%B%F{red}[%F{yellow}%n%F{green}@%F{blue}%M%F{magenta}%~%F{red}]%f%b "
-PS2="%B%F{blue}>>>%f%b "
-stty stop undef		# disable ctrl-s to avoid terminal freezing
+autoload -Uz vcs_info # enable version control info
+precmd_vcs_info () { vcs_info } # always load before display
+precmd_functions+=( precmd_vcs_info )
+setopt prompt_subst
+PS1='%F{green}%n@%m%f %F{yellow}%B%~%b%f% %F{cyan} [${vcs_info_msg_0_}]%f %% '
+zstyle ':vcs_info:git:*' formats '%b'
+
+# disable ctrl-s to avoid terminal freezing
+stty stop undef		
 setopt interactive_comments
 
 # colorised output
@@ -61,16 +69,29 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01'
 
 # 2. colorised gitdiff using bat
 batdiff() {
-    git diff --name-only --relative --diff-filter=d | xargs bat --diff
+	git diff --name-only --relative --diff-filter=d | xargs bat --diff
 }
 
-# 3. colorised man pages
-# export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-# export MANROFFOPT="-c"          # due to formatting problems with man pages
-#
+# 3. call dirdiff
+funciton dirdiff()
+{
+	# shell-escape each path:
+	DIR1=$(printf '%q' "$1"); shift
+	DIR2=$(printf '%q' "$1"); shift
+	vim $@ -c "DifDiff" $DIR1 $DIR2
+}
 
 # 4. colorised --help
 alias bathelp='bat --plain --language=help'
+
+# 5. colorsized less
+LESSOPEN="|/usr/local/bin/batpipe %s";
+export LESSOPEN;
+unset LESSCLOSE;
+LESS="$LESS -R";
+BATPIPE="color";
+export LESS;
+export BATPIPE;
 
 # config only for zsh
 alias -g -- -h='-h 2>&1 | bat --language=help --style=plain'
@@ -83,24 +104,9 @@ if type rg &> /dev/null; then				# if ripgrep exists
 fi
 
 # setting defualt editor (nvim)
-export EDITOR='$(which hx)'
-# export VISUAL='emacsclient -cnqu'
-export VISUAL='$(which hx)'
-export BROWSER="$(which firefox)"
-# export LESS='-R --use-color -Dd+r$Du+b$'        # less command with color output
-# viman () { text=$(man "$@") && echo "$text" | vim -R +":set ft=man" - ; }
-
-
-# load aliases
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
-
-# browsing through the current directory
-fcd(){cd $(ls | fzf)}
-
-# histroy control
-HISTCONTROL=ignorespace:ignoredups
-HISTFILESIZE=500
-FCEDIT="$(which emacsclient -cnqu)"
+export EDITOR='$(which nvim)'
+export VISUAL='$(which nvim)'
+# export BROWSER="$(which firefox)"
 
 # updaet run-help to improve its functionality to work on shell built-ins and shell commands
 autoload -Uz run-help
@@ -109,10 +115,46 @@ alias help=run-help
 
 autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo run-help-svk run-help-svn
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# plugins
+eval "$(zoxide init zsh)" # zoxide
+source <(fzf --zsh) # fzf
 
-# path variable
-PATH=$HOME/.local/bin:$PATH
+# functions
+source $HOME/fzf-git.sh
+# fkill - kill processes - list only the ones you can kill. Modified the earlier script.
+fkill() {
+	local pid 
+	if [ "$UID" != "0" ]; then
+		pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+	else
+		pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+	fi  
 
-# add zoxide binary
-eval "$(zoxide init zsh)"
+	if [ "x$pid" != "x" ]
+	then
+		echo $pid | xargs kill -${1:-9}
+	fi  
+}
+
+# Install (one or multiple) selected application(s)
+# using "brew search" as source input
+# mnemonic [B]rew [I]nstall [P]ackage
+bip() {
+  local inst=$(brew search "$@" | fzf -m)
+
+  if [[ $inst ]]; then
+    for prog in $(echo $inst);
+    do; brew install $prog; done;
+  fi
+}
+
+# Delete (one or multiple) selected application(s)
+# mnemonic [B]rew [C]lean [P]ackage (e.g. uninstall)
+bcp() {
+  local uninst=$(brew leaves | fzf -m)
+
+  if [[ $uninst ]]; then
+    for prog in $(echo $uninst);
+    do; brew uninstall $prog; done;
+  fi
+}
