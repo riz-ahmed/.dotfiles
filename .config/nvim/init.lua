@@ -183,6 +183,9 @@ map({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = tru
 -- clear search with <esc>
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 
+-- jump to config file
+map("n", "<leader>ce", "<cmd>e $HOME/.config/nvim/init.lua<cr>", { desc = "Escape and clear hlsearch" })
+
 -- map jk to esc and clear hlsearch
 map({ "i" }, "jk", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 
@@ -255,6 +258,9 @@ map("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
 -- windows
 map("n", "<leader>w", "<c-w>", { desc = "Windows", remap = true })
+
+-- Netrw
+map("n", "<leader>e", "<cmd>Exp<cr>", { desc = "Netrw", remap = true })
 
 --------------------------------------------------
 --- IV. Plugins
@@ -578,7 +584,7 @@ require("lazy").setup({
 								["]m"] = "@function.outer",
 								["]]"] = { query = "@class.outer", desc = "Next class start" },
 								["]o"] = "@loop.*",
-								["]s"] = { query = "@local.scope", query_group = "locals", desc = "Next scope" },
+								["]S"] = { query = "@local.scope", query_group = "locals", desc = "Next scope" },
 								["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
 							},
 							goto_next_end = {
@@ -727,7 +733,7 @@ require("lazy").setup({
 					lsp_format = "fallback",
 				},
 				-- Set up format-on-save
-				format_on_save = { timeout_ms = 500 },
+				format_on_save = { timeout_ms = 1000 },
 				-- Customize formatters
 				formatters = {
 					shfmt = {
@@ -769,6 +775,12 @@ require("lazy").setup({
 			end,
 			ft = { "markdown" },
 		},
+
+		-- 15. surround
+		{ "echasnovski/mini.surround", version = "*", config = true },
+
+		-- 16. gitsigns
+		{ "lewis6991/gitsigns.nvim", event = "BufEnter", config = true },
 	},
 	-- Configure any other settings here. See the documentation for more details.
 	-- colorscheme that will be used when installing plugins.

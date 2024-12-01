@@ -43,7 +43,7 @@ alias man='batman'
 alias nv='nvim'
 alias ls='eza --icons=always'
 alias ll='eza --icons=always -la'
-alias rsync="rsync -a --info=progress2"
+alias rsync="rsync -ah --info=progress2"
 alias so='source $HOME/.zshrc'
 
 # EMACS keybindings
