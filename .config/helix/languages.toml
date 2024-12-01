@@ -1,0 +1,31 @@
+[[language]]
+name = "python"
+indent = {tab-width = 2, unit = " "}
+auto-format = true
+rulers = [79] # show ruler at column 79
+
+[language-server.pylsp.config.pylsp]
+plugins.ruff.enable = true
+plugins.black.enable = true
+
+[language.formatter]
+command = "black"
+args = ["--line-length", "79", "--quite", "-"]
+
+[[language]]
+name = "markdown"
+language-servers = [ "markdown-oxide", "mdpls" ]
+formatter = { command = "dprint", args = ["fmt", "--stdint", "md" ]}
+auto-format = true
+rulers = [120]
+
+[language-server.mdpls]
+command = "$HOME/.cargo/bin/mdpls"
+config = { markdown.preview.auto = false, markdown.preview.browser = "safari" }
+
+[[language]]
+name = "latex"
+
+[language-server.texlab.config.texlab.build]
+onSave = true
+
