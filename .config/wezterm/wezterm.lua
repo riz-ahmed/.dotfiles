@@ -4,6 +4,14 @@ local wezterm = require("wezterm")
 -- This will hold the configuration.
 local config = wezterm.config_builder()
 
+-- start wezterm in maximized window
+local mux = wezterm.mux
+
+wezterm.on("gui-startup", function()
+	local tab, pane, window = mux.spawn_window({})
+	window:gui_window():maximize()
+end)
+
 -- This is where you actually apply your config choices
 config.font = wezterm.font("Iosevka NF")
 config.font_size = 16.0
@@ -79,11 +87,6 @@ config.keys = {
 		mods = "LEADER",
 		key = "k",
 		action = wezterm.action.ActivatePaneDirection("Up"),
-	},
-	{
-		mods = "LEADER",
-		key = "l",
-		action = wezterm.action.ActivatePaneDirection("Right"),
 	},
 }
 -- and finally, return the configuration to wezterm

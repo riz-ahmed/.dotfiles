@@ -353,16 +353,16 @@ require("lazy").setup({
 				})
 
 				-- diagnostics for all servers
-				vim.diagnostic.config({
-					signs = {
-						text = {
-							[vim.diagnostic.severity.ERROR] = "✘",
-							[vim.diagnostic.severity.WARN] = "▲",
-							[vim.diagnostic.severity.HINT] = "⚑",
-							[vim.diagnostic.severity.INFO] = "»",
-						},
-					},
-				})
+				-- vim.diagnostic.config({
+				-- 	signs = {
+				-- 		text = {
+				-- 			[vim.diagnostic.severity.ERROR] = "✘",
+				-- 			[vim.diagnostic.severity.WARN] = "▲",
+				-- 			[vim.diagnostic.severity.HINT] = "⚑",
+				-- 			[vim.diagnostic.severity.INFO] = "»",
+				-- 		},
+				-- 	},
+				-- })
 				-- launch lua server
 				require("lspconfig").lua_ls.setup({
 					on_attach = function(client)
@@ -405,7 +405,7 @@ require("lazy").setup({
 			event = "InsertEnter",
 			dependencies = {
 				{
-					"L3MON4D3/LuaSnip",
+					{ "L3MON4D3/LuaSnip", dependencies = { "rafamadriz/friendly-snippets" } },
 					"hrsh7th/cmp-buffer",
 					"hrsh7th/cmp-path",
 					"onsails/lspkind.nvim",
@@ -507,9 +507,19 @@ require("lazy").setup({
 
 		-- 4. render-markdown
 		{
-			"MeanderingProgrammer/render-markdown.nvim",
-			dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.icons" }, -- if you use standalone mini plugins
-			config = true,
+			"OXY2DEV/markview.nvim",
+			lazy = false, -- Recommended
+			dependencies = {
+				"nvim-treesitter/nvim-treesitter",
+				"nvim-tree/nvim-web-devicons",
+			},
+			config = function()
+				require("markview").setup({
+					list_items = {
+						indent_size = 0,
+					},
+				})
+			end,
 		},
 
 		-- 5. paste images in markdown
@@ -541,6 +551,25 @@ require("lazy").setup({
 			end,
 			dependencies = {
 				"nvim-treesitter/nvim-treesitter-textobjects",
+				{
+					-- 7.1 show the context in code where from the current line
+					"nvim-treesitter/nvim-treesitter-context",
+					keys = {
+						{
+							"[c",
+							function()
+								require("treesitter-context").go_to_context(vim.v.count1)
+							end,
+							silent = true,
+							desc = "Jump up to the context (treesitter)",
+						},
+					},
+				},
+				-- 7.2 plugin to view help docs like markdown
+				{
+					"OXY2DEV/helpview.nvim",
+					lazy = false,
+				},
 			},
 			config = function()
 				require("nvim-treesitter.configs").setup({
@@ -631,16 +660,7 @@ require("lazy").setup({
 				{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 			},
 			config = function()
-				-- Two important keymaps to use while in Telescope are:
-				--  - Insert mode: <c-/>
-				--  - Normal mode: ?
 				require("telescope").setup({
-					-- defaults = {
-					--   mappings = {
-					--     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-					--   },
-					-- },
-					-- pickers = {}
 					extensions = {
 						["ui-select"] = {
 							require("telescope.themes").get_dropdown(),
@@ -693,14 +713,27 @@ require("lazy").setup({
 		-- 9. mini.paris
 		{ "echasnovski/mini.pairs", version = "*", config = true },
 
-		-- 10. indents
+		-- 10. highlight indents
 		{
-			"nvimdev/indentmini.nvim",
+			"shellRaining/hlchunk.nvim",
+			event = { "BufReadPre", "BufNewFile" },
 			config = function()
-				require("indentmini").setup()
+				require("hlchunk").setup({
+					chunk = {
+						enable = true,
+					},
+					indent = {
+						enable = true,
+					},
+					line_num = {
+						enable = true,
+					},
+					blank = {
+						enable = true,
+					},
+				})
 			end,
 		},
-
 		--11. formatter
 		{
 			"stevearc/conform.nvim",
@@ -717,9 +750,6 @@ require("lazy").setup({
 					desc = "Format buffer",
 				},
 			},
-			-- This will provide type hinting with LuaLS
-			---@module "conform"
-			---@type conform.setupOpts
 			opts = {
 				-- Define your formatters
 				formatters_by_ft = {
@@ -728,23 +758,12 @@ require("lazy").setup({
 					markdown = { "dprint" },
 					javascript = { "prettierd", "prettier", stop_after_first = true },
 				},
-				-- Set default options
-				default_format_opts = {
-					lsp_format = "fallback",
-				},
 				-- Set up format-on-save
-				format_on_save = { timeout_ms = 1000 },
-				-- Customize formatters
+				format_on_save = { timeout_ms = 3000, lsp_format = "fallback", async = false, quite = false },
 				formatters = {
-					shfmt = {
-						prepend_args = { "-i", "2" },
-					},
+					injected = { options = { ignore_errors = true } },
 				},
 			},
-			init = function()
-				-- If you want the formatexpr, here is the place to set it
-				vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-			end,
 		},
 
 		-- 12. colorful delimeters
@@ -781,6 +800,222 @@ require("lazy").setup({
 
 		-- 16. gitsigns
 		{ "lewis6991/gitsigns.nvim", event = "BufEnter", config = true },
+
+		-- 17. bigfile: will ditach from lsp, treesitter whenver big files are opened
+		{ "LunarVim/bigfile.nvim" },
+
+		-- 18. lsp powered incremental renaming
+		{
+			"smjonas/inc-rename.nvim",
+			config = function()
+				require("inc_rename").setup()
+			end,
+		},
+
+		-- 20. visualise and fix git conflicts
+		-- make use of gitconflict commands to fix them interactively
+		{ "akinsho/git-conflict.nvim", version = "*", config = true },
+
+		-- 21. Linter
+		{
+			"mfussenegger/nvim-lint",
+			event = {
+				"BufReadPre",
+				"BufNewFile",
+			},
+			keys = {
+				{
+					"<leader>ll",
+					function()
+						require("lint").try_lint()
+					end,
+					desc = "Trigger linting for current file",
+				},
+			},
+			config = function()
+				local lint = require("lint")
+
+				lint.linters_by_ft = {
+					markdown = { "markdownlint-cli2" },
+					-- lua = { "luacheck" },
+					python = { "pylint" },
+				}
+
+				local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+
+				vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+					group = lint_augroup,
+					callback = function()
+						lint.try_lint()
+					end,
+				})
+			end,
+		},
+
+		-- 23. DAP
+		{
+			"mfussenegger/nvim-dap",
+			dependencies = {
+				"rcarriga/nvim-dap-ui",
+			},
+			keys = {
+				{
+					"<leader>G",
+					function()
+						require("dap").toggle_breakpoint()
+					end,
+					desc = "DAP: toggle breakpoint",
+				},
+			},
+			config = function()
+				local dap = require("dap")
+				dap.adapters.lldb = {
+					type = "executable",
+					command = "/opt/homebrew/bin/lldb-dap", -- adjust as needed, must be absolute path
+					name = "lldb",
+				}
+				dap.configurations.cpp = {
+					{
+						name = "Launch",
+						type = "lldb",
+						request = "launch",
+						program = function()
+							return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+						end,
+						cwd = "${workspaceFolder}",
+						stopOnEntry = false,
+						args = {},
+					},
+				}
+				dap.configurations.c = dap.configurations.cpp
+			end,
+			env = function()
+				local variables = {}
+				for k, v in pairs(vim.fn.environ()) do
+					table.insert(variables, string.format("%s=%s", k, v))
+				end
+				return variables
+			end,
+		},
+
+		-- 24. UI for nvim-dap
+		{
+			"rcarriga/nvim-dap-ui",
+			dependencies = {
+				"mfussenegger/nvim-dap",
+				"nvim-neotest/nvim-nio",
+				{
+					"theHamsta/nvim-dap-virtual-text",
+					opts = {},
+				},
+			},
+			keys = {
+				{
+					"<leader>du",
+					function()
+						require("dapui").toggle({})
+					end,
+					desc = "Dap UI",
+				},
+				{
+					"<leader>de",
+					function()
+						require("dapui").eval()
+					end,
+					desc = "Eval",
+					mode = { "n", "v" },
+				},
+			},
+			opts = {},
+			config = function(_, opts)
+				local dap = require("dap")
+				local dapui = require("dapui")
+				dapui.setup(opts)
+				dap.listeners.after.event_initialized["dapui_config"] = function()
+					dapui.open({})
+				end
+				dap.listeners.before.event_terminated["dapui_config"] = function()
+					dapui.close({})
+				end
+				dap.listeners.before.event_exited["dapui_config"] = function()
+					dapui.close({})
+				end
+			end,
+		},
+
+		-- 25. show virtual text during hlsearch
+		{
+			"kevinhwang91/nvim-hlslens",
+			config = function()
+				require("hlslens").setup()
+
+				local kopts = { noremap = true, silent = true }
+
+				vim.api.nvim_set_keymap(
+					"n",
+					"n",
+					[[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
+					kopts
+				)
+				vim.api.nvim_set_keymap(
+					"n",
+					"N",
+					[[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
+					kopts
+				)
+				vim.api.nvim_set_keymap("n", "*", [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+				vim.api.nvim_set_keymap("n", "#", [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+				vim.api.nvim_set_keymap("n", "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+				vim.api.nvim_set_keymap("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+				vim.api.nvim_set_keymap("n", "<Leader>l", "<Cmd>noh<CR>", kopts)
+			end,
+		},
+
+		-- 26. Diagnostics
+		{
+			"rachartier/tiny-inline-diagnostic.nvim",
+			event = "VeryLazy", -- Or `LspAttach`
+			priority = 1000, -- needs to be loaded in first
+			config = function()
+				require("tiny-inline-diagnostic").setup()
+			end,
+		},
+
+		-- 27. visually display where the marks are set
+		{
+			"chentoast/marks.nvim",
+			event = "VeryLazy",
+			opts = {},
+		},
+
+		--28. displays references as virtual text for every symbol identified by lsp
+		{
+			"VidocqH/lsp-lens.nvim",
+			config = true,
+		},
+
+		--29. toggle checkboxes in markdown
+		{
+			"nfrid/markdown-togglecheck",
+			dependencies = { "nfrid/treesitter-utils" },
+			ft = { "markdown" },
+			keys = {
+				{
+					"<leader>nn",
+					function()
+						require("markdown-togglecheck").toggle()
+					end,
+					desc = "Toggle Checkmark",
+				},
+				{
+					"<leader>nN",
+					function()
+						require("markdown-togglecheck").toggle_box()
+					end,
+					desc = "Toggle Checkbox",
+				},
+			},
+		},
 	},
 	-- Configure any other settings here. See the documentation for more details.
 	-- colorscheme that will be used when installing plugins.

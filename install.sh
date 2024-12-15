@@ -15,4 +15,5 @@ brew install black # python formatter
 brew install bat-extras
 brew install drpint # markdown formatter
 brew install git-delta
+brew install rsync
 python3 -m pip install python-lsp-server

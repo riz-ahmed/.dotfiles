@@ -104,9 +104,12 @@ if type rg &> /dev/null; then				# if ripgrep exists
 fi
 
 # setting defualt editor (nvim)
-export EDITOR='$(which nvim)'
-export VISUAL='$(which nvim)'
+export EDITOR="$(which nvim)"
+export VISUAL="$(which nvim)"
 # export BROWSER="$(which firefox)"
+#
+# link libs installed using brew
+export DYLD_LIBRARY_PATH="/opt/homebrew/lib/"
 
 # updaet run-help to improve its functionality to work on shell built-ins and shell commands
 autoload -Uz run-help
@@ -157,4 +160,14 @@ bcp() {
     for prog in $(echo $uninst);
     do; brew uninstall $prog; done;
   fi
+}
+
+# shell wrapper for yazi file manager
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
 }
