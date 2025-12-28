@@ -4,7 +4,7 @@ show_hidden = true
 sort_by = "alphabetical"
 sort_sensitive = true
 sort_dir_first = true
-line_mode ="size_and_permissions"
+line_mode = "size_and_permissions"
 scroll_off = 4
 
 [preview]
@@ -18,3 +18,6 @@ cursor_blink = false
 use = "catppuccin-mocha"
 # For upcoming Yazi 0.4 (nightly version):
 dark = "catppuccin-mocha"
+
+[opener]
+edit = [{ run = 'neovide $@', desc = "Neovide", block = true, for = "unix" }]

@@ -42,9 +42,10 @@ alias ezsh='nvim $HOME/.zshrc'
 alias man='batman'
 alias nv='nvim'
 alias ls='eza --icons=always'
-alias ll='eza --icons=always -la'
+alias ll="eza --group-directories-first -a -l --icons=always"
 alias rsync="rsync -ah --info=progress2"
 alias so='source $HOME/.zshrc'
+alias man="batman"
 
 # EMACS keybindings
 autoload -Uz select-word-style  # M navitagation just like in Emacs
@@ -171,3 +172,13 @@ function y() {
 	fi
 	rm -f -- "$tmp"
 }
+
+[[ $TERM == "xterm-kitty" ]] && stty icrnl  # for kitty to render <enter> properly when using pass-store
+
+source $HOMEBREW_PREFIX/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
+source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+. "$HOME/.local/bin/env"
+
+eval "$(starship init zsh)"

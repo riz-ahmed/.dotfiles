@@ -1,12 +1,10 @@
-# dotfiles
+# Dotfiles
 
-- Just my dotfiles with my personal preference on setting up Arch Linux with all
-  the apps set up to my taste
+- Just my dotfiles with my personal preference on Mac
 - Copied stuff from here and there
 
 ## Requirements
 
-- Emacs (29 or higher)
 - git
 - tmux
 - NVIM

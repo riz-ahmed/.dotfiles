@@ -31,11 +31,12 @@
 
 [merge]
 	conflictstyle = zdiff3
-	tool = vimdiff
+	tool = nvimdiff
 	prompt = false
 
 [diff]
 	colorMoved = default
+	tool = nvimdiff
 
 [delta]
 	navigate = true
@@ -55,3 +56,6 @@
 	hunk-header-file-style = red
 	hund-header-line-number-style = "#067a00"
 	hunk-header-style = file line-number syntax
+
+[mergetool "nvimdiff"]
+	layout = BASE,MERGED + BASE,LOCAL + BASE,REMOTE
