@@ -121,10 +121,8 @@ autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
 
 # plugins
 eval "$(zoxide init zsh)" # zoxide
-source <(fzf --zsh) # fzf
+# source <(fzf --zsh) # fzf
 
-# functions
-source $HOME/fzf-git.sh
 # fkill - kill processes - list only the ones you can kill. Modified the earlier script.
 fkill() {
 	local pid 

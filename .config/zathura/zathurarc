@@ -56,7 +56,7 @@ set adjust-open width
 set recolor true
 
 # from lukes rice
-set sandbox none
+# set sandbox none
 set statusbar-h-padding 0
 set statusbar-v-padding 0
 set page-padding 1

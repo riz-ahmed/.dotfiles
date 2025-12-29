@@ -1,10 +1,8 @@
 #! /bin/bash
 
 brew install git
+brew install stow
 brew install wget
-cd ~/Downloads
-wget https://github.com/neovim/neovim/releases/download/v0.10.2/nvim-macos-arm64.tar.gz # download neovim
-xattr -c ./nvim-macos* # remove developer not verified warning
 brew install ripgrep
 brew install fd
 brew install node
@@ -16,4 +14,16 @@ brew install bat-extras
 brew install drpint # markdown formatter
 brew install git-delta
 brew install rsync
-python3 -m pip install python-lsp-server
+brew tap homebrew-zathura/zathura
+brew install zathura
+brew install zathura-pdf-mupdf
+brew install zathura-cb
+brew install zathura-djvu
+brew install zathura-ps
+d=$(brew --prefix zathura)/lib/zathura
+mkdir -p $d
+for n in cb djvu pdf-mupdf pdf-poppler ps; do
+	p=$(brew --prefix zathura-$n)/lib$n.dylib
+	[[ -f $p ]] && ln -s $p $d
+done
+curl https://raw.githubusercontent.com/homebrew-zathura/homebrew-zathura/refs/heads/master/convert-into-app.sh | sh

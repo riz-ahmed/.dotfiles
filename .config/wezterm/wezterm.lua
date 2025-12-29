@@ -17,10 +17,12 @@ config.font = wezterm.font("Iosevka NF")
 config.font_size = 16.0
 config.window_background_opacity = 0.8
 config.macos_window_background_blur = 10
+config.window_decorations = "RESIZE"
+
 -- config.font = wezterm.font_with_fallback({
 -- 	"Menlo",
 -- })
-config.leader = { key = "a", mods = "CMD", timeout_milliseconds = 5000 }
+config.leader = { key = "`", timeout_milliseconds = 5000 }
 local act = wezterm.action
 config.keys = {
 	{
